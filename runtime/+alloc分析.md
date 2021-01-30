@@ -80,7 +80,7 @@ kk | Person hasCustomAWZ : 0
 				|callAlloc
 					|_objc_rootAllocWithZone
 						|_class_createInstancesFromZone
-							|instanceSize	//计算内存大小
+							|instanceSize		//计算内存大小
 							|calloc			//开辟空间
 							|initInstanceIsa	//初始化isa
 								|initIsa
