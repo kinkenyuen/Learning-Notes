@@ -1,5 +1,5 @@
 # 一、isa指针优化
-OC对象都含有一个`isa`指针，在`arm64`架构之前，`isa`仅仅是一个指针，保存类对象或元类对象的内存地址，而在`arm64`架构之后，苹果对`isa`指针进行了优化，`isa`指针的类型采用联合（共用体`union`）,同时使用位域来存储更多信息，看懂优化后的isa指针，需要先了解前置知识[位域、联合、结构体](https://github.com/kinkenyuen/Learning-Notes/blob/main/C:C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
+OC对象都含有一个`isa`指针，在`arm64`架构之前，`isa`仅仅是一个指针，保存类对象或元类对象的内存地址，而在`arm64`架构之后，苹果对`isa`指针进行了优化，`isa`指针的类型采用联合（共用体`union`）,同时使用位域来存储更多信息，看懂优化后的isa指针，需要先了解前置知识[位域、联合、结构体](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
 # 二、isa & ISA_MASK
 
