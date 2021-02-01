@@ -1,5 +1,5 @@
-# iOS-Note
-learning notes about iOS
+# 学习笔记
+分类记录、总结工作学习上的笔记
 
 # runtime
 
