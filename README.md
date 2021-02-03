@@ -4,6 +4,9 @@
 # C/C++
 * [位域](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
+# iOS基础
+[Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
+
 # runtime
 
 * [+alloc分析](https://github.com/kinkenyuen/iOS-Notes/blob/main/runtime/%2Balloc%E5%88%86%E6%9E%90.md)
