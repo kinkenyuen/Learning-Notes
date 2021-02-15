@@ -53,4 +53,47 @@
 
 **红色为Child类经过方案A Hook之后的指向图，蓝色为Super类经过方案A Hook之后的指向图，后同。**
 
+调试执行顺序
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Base instanceMethod]
+```
+
+可以看到顺序与指向图一致
+
+### Child用方案A_Super用方案B
+
+![3](./imgs/MethodSwizzling/先Child后Super/Child、Super未实现方法/Child_A-Super_B.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Super super_instanceMethod]
+2021-02-15 16:05:26.994133+0800 MethodSwizzling[11456:925811] -[Base super_instanceMethod]: unrecognized selector sent to instance 0x6000003805c0
+```
+
+1. Child、Super实例执行方法路径正常
+1. 当Base实例调用方法，因为Method的IMP指向了super_instanceMethod，所以出现
+`unrecognized selector`错误
+
+这种错误出现的场景:
+
+1. 要Hook的当前类没有实现目标方法，而父类实现了
+2. 在当前类的类别中直接使用`method_exchangeImplementations `操作
+3. 在替换方法内部进行了自调用
+
+当方法执行到替换方法内部自调用，就会出现**父类调用子类的SEL，从而出现错误**
+
 # 先Hook Super 再Hook Child
