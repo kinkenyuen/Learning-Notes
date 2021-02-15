@@ -354,3 +354,6 @@
 
 # 总结
 
+1. 方案A明显优于方案B
+2. 从调用顺序（执行路径来看），先Hook Super再Hook Child更安全，再某些情况下先Hook Child再Hook Super，Super的方法会被忽略
+3. MethodSwizzling需要注意的是检查Hook后类的Method结构体SEL、IMP指向，是否指向了一个实例能够响应的SEL
