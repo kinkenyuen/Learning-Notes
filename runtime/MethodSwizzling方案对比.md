@@ -208,3 +208,149 @@
 ![13](./imgs/MethodSwizzling/先Child后Super/Child、Super均实现方法/都使用方案B.jpg)
 
 # 先Hook Super 再Hook Child
+
+## Child、Super均未实现方法
+
+![1](./imgs/MethodSwizzling/未hook/Child、Super未实现方法/初始状态.jpg)
+
+### Child用方案A_Super用方案A
+
+![14](./imgs/MethodSwizzling/先Super后Child/Child、Super未实现方法/Super_A-Child_A.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Base instanceMethod]
+```
+
+### Child用方案A_Super用方案B
+
+![15](./imgs/MethodSwizzling/先Super后Child/Child、Super未实现方法/Super_B-Child_A.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Super super_instanceMethod]
+2021-02-15 16:45:55.205639+0800 MethodSwizzling[12188:959547] -[Base super_instanceMethod]: unrecognized selector sent to instance 0x6000025204d0
+```
+
+### Child用方案B_Super用方案A
+
+![16](./imgs/MethodSwizzling/先Super后Child/Child、Super未实现方法/Super_A-Child_B.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Child child_instanceMethod]
+2021-02-15 16:47:16.002628+0800 MethodSwizzling[12203:961156] -[Super child_instanceMethod]: unrecognized selector sent to instance 0x600002b18310
+```
+
+### Child用方案B_Super用方案B
+
+
+![17](./imgs/MethodSwizzling/先Super后Child/Child、Super未实现方法/Super_B-Child_B.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Child child_instanceMethod]
+2021-02-15 16:48:58.560954+0800 MethodSwizzling[12224:962935] -[Super child_instanceMethod]: unrecognized selector sent to instance 0x600003704110
+```
+
+## Child实现方法，Super未实现方法
+
+![6](./imgs/MethodSwizzling/未hook/Child实现方法，Super未实现方法/初始状态.jpg)
+
+### Super用方案A
+
+![18](./imgs/MethodSwizzling/先Super后Child/Child实现方法，Super未实现方法/Super_A.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Base instanceMethod]
+```
+
+### Super用方案B
+
+![19](./imgs/MethodSwizzling/先Super后Child/Child实现方法，Super未实现方法/Super_B.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Super super_instanceMethod]
+2021-02-15 16:52:30.561850+0800 MethodSwizzling[12273:967017] -[Base super_instanceMethod]: unrecognized selector sent to instance 0x600000730790
+```
+
+## Child未实现方法、Super实现方法
+
+![9](./imgs/MethodSwizzling/未hook/Child未实现方法、Super实现方法/初始状态.jpg)
+
+### Child用方案A
+
+![20](./imgs/MethodSwizzling/先Super后Child/Child未实现方法、Super实现方法/Child_A.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Base instanceMethod]
+```
+
+### Child用方案B
+
+![21](./imgs/MethodSwizzling/先Super后Child/Child未实现方法、Super实现方法/Child_B.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Child child_instanceMethod]
+2021-02-15 16:58:00.866237+0800 MethodSwizzling[12315:971512] -[Super child_instanceMethod]: unrecognized selector sent to instance 0x6000022fc240
+```
+
+## Child、Super均实现方法
+
+![12](./imgs/MethodSwizzling/未hook/Child、Super均实现方法/初始状态.jpg)
+
+![13](./imgs/MethodSwizzling/先Super后Child/Child、Super均实现方法/都使用方案B.jpg)
+
+# 总结
+
