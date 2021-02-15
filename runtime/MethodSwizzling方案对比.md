@@ -96,4 +96,115 @@
 
 当方法执行到替换方法内部自调用，就会出现**父类调用子类的SEL，从而出现错误**
 
+### Child用方案B_Super用方案A
+
+![4](./imgs/MethodSwizzling/先Child后Super/Child、Super未实现方法/Child_B-Super_A.jpg)
+
+```
+=====Child实例调用方法=====
+-[Super super_instanceMethod]
+-[Child child_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Child child_instanceMethod]
+2021-02-15 16:19:31.611100+0800 MethodSwizzling[11787:935586] -[Super child_instanceMethod]: unrecognized selector sent to instance 0x6000021f8380
+```
+
+### Child用方案B_Super用方案B
+![5](./imgs/MethodSwizzling/先Child后Super/Child、Super未实现方法/Child_B-Super_B.jpg)
+
+```
+=====Child实例调用方法=====
+-[Super super_instanceMethod]
+-[Child child_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Child child_instanceMethod]
+2021-02-15 16:21:13.590470+0800 MethodSwizzling[11811:937081] -[Super child_instanceMethod]: unrecognized selector sent to instance 0x600002498440
+```
+
+## Child实现方法，Super未实现方法
+
+![6](./imgs/MethodSwizzling/未hook/Child实现方法，Super未实现方法/初始状态.jpg)
+
+因为Child实现了方法，方案A和方案B作用于Child类，效果是一致的，因为只需对Super操作，后续哪个类实现方法，与这个相同处理。
+
+
+### Super用方案A
+
+![7](./imgs/MethodSwizzling/先Child后Super/Child实现方法，Super未实现方法/SuperA.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Base instanceMethod]
+```
+
+### Super用方案B
+
+![8](./imgs/MethodSwizzling/先Child后Super/Child实现方法，Super未实现方法/SuperB.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child instanceMethod]
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super super_instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Super super_instanceMethod]
+2021-02-15 16:29:17.997290+0800 MethodSwizzling[11881:944639] -[Base super_instanceMethod]: unrecognized selector sent to instance 0x6000034f48c0
+```
+
+## Child未实现方法、Super实现方法
+
+![9](./imgs/MethodSwizzling/未hook/Child未实现方法、Super实现方法/初始状态.jpg)
+
+### Child用方案A
+
+![10](./imgs/MethodSwizzling/先Child后Super/Child未实现方法、Super实现方法/ChildA.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Super instanceMethod]
+-[Base instanceMethod]
+=====Base实例调用方法=====
+-[Base instanceMethod]
+```
+
+### Child用方案B
+
+![11](./imgs/MethodSwizzling/先Child后Super/Child未实现方法、Super实现方法/ChildB.jpg)
+
+```
+=====Child实例调用方法=====
+-[Child child_instanceMethod]
+-[Super instanceMethod]
+-[Base instanceMethod]
+=====Super实例调用方法=====
+-[Child child_instanceMethod]
+2021-02-15 16:33:53.477300+0800 MethodSwizzling[11929:949184] -[Super child_instanceMethod]: unrecognized selector sent to instance 0x600001df8340
+```
+
+## Child、Super均实现方法
+
+这个情况就是简单的交换了自己本类的方法
+
+![12](./imgs/MethodSwizzling/未hook/Child、Super均实现方法/初始状态.jpg)
+
+![13](./imgs/MethodSwizzling/先Child后Super/Child、Super均实现方法/都使用方案B.jpg)
+
 # 先Hook Super 再Hook Child
