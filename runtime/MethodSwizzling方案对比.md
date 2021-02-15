@@ -357,3 +357,7 @@
 1. 方案A明显优于方案B
 2. 从调用顺序（执行路径来看），先Hook Super再Hook Child更安全，再某些情况下先Hook Child再Hook Super，Super的方法会被忽略
 3. MethodSwizzling需要注意的是检查Hook后类的Method结构体SEL、IMP指向，是否指向了一个实例能够响应的SEL
+
+# REF
+
+[Objective-C Method Swizzling](http://yulingtianxia.com/blog/2017/04/17/Objective-C-Method-Swizzling/#%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF)
