@@ -8,7 +8,7 @@
 [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
 ## Threading Programming Guide
-* [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md)
+* [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
 
 <!--* [Thread Management (译)]()
 * [Run Loops (译)]()
