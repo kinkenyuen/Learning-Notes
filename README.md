@@ -7,6 +7,14 @@
 # iOS基础
 [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
+## Threading Programming Guide
+* [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md)
+
+<!--* [Thread Management (译)]()
+* [Run Loops (译)]()
+* [Synchronization (译)]()
+* [Thread Safety Summary (译)]()-->
+
 # runtime
 
 * [+alloc分析](https://github.com/kinkenyuen/iOS-Notes/blob/main/runtime/%2Balloc%E5%88%86%E6%9E%90.md)
