@@ -32,7 +32,7 @@ runloop就像它的名字描述那样，它是线程进入并用于触发回调�
 > For secondary threads, you might use custom modes to prevent low-priority sources from delivering events during time-critical operations.
 
 >注意:
-**模式根据事件的来源进行区分，而不是事件的类型。**例如，您不能使用模式仅匹配鼠标点击事件或键盘事件。您可以使用模式来监听一组不同的端口，暂时挂起计时器，或者以其他方式更改源和正在监视的runloop observers。
+模式根据事件的来源进行区分，而不是事件的类型。例如，您不能使用模式仅匹配鼠标点击事件或键盘事件。您可以使用模式来监听一组不同的端口，暂时挂起计时器，或者以其他方式更改源和正在监视的runloop observers。
 
 表3-1列出了Cocoa和Core Foundation定义的标准模式，以及使用该模式的描述。第二列列出了用于在代码中指定模式的实际常量。
 
@@ -42,7 +42,7 @@ runloop就像它的名字描述那样，它是线程进入并用于触发回调�
 | Connection | NSConnectionReplyMode (Cocoa) | Cocoa使用这种模式与NSConnection对象一起监控应答。您自己应该很少需要使用这种模式。|
 | Modal |NSModalPanelRunLoopMode (Cocoa)|Cocoa使用这种模式来识别用于模态面板的事件。|
 |Event tracking |NSEventTrackingRunLoopMode (Cocoa)| Cocoa使用此模式处理鼠标拖动以及其他一些用户交互事件|
-|Common modes| NSRunLoopCommonModes (Cocoa)<br>kCFRunLoopCommonModes (Core Foundation)| 这是一组可配置的常用模式。**将输入源与此模式相关联意味着将其与组中的每个模式相关联。**对于Cocoa应用程序，该集合默认包括Default、Modal和Event tracking模式。Core Foundation最初只包含Default模式。您可以使用CFRunLoopAddCommonMode函数来添加自定义模式。|
+|Common modes| NSRunLoopCommonModes (Cocoa)<br>kCFRunLoopCommonModes (Core Foundation)| 这是一组可配置的常用模式。**将输入源与此模式相关联意味着将其与组中的每个模式相关联。**对于Cocoa应用程序，该集合默认包括Default、Modal和Event tracking模式。Core Foundation最初只包含Default模式。您可以使用CFRunLoopAddCommonMode函数来添加自定义模式。 |
 
 ## 输入源
 输入源异步地向线程传递事件。**事件的来源取决于输入源的类型，输入源通常是两类之一。**基于端口的输入源监视应用程序的Mach端口。自定义输入源监视事件的自定义源。就runloop而言，输入源是基于端口的还是自定义的并不重要。系统通常实现两种类型的输入源，您可以按原样使用。这两个源之间唯一的区别是它们如何发出信号。**基于端口的源由内核自动发出信号，自定义源必须从另一个线程手动发出信号。**
