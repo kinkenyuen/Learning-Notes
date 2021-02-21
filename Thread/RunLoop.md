@@ -65,7 +65,7 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 ### Cocoa Perform Selector 源
 
-除了基于端口的源，Cocoa还定义了一个定制的输入源，允许您在任何线程上执行选择器。与基于端口的源一样，在目标线程上序列化执行选择器请求，解决了在一个线程上运行多个方法时可能出现的许多同步问题。与基于端口的源不同，执行选择器源在执行选择器后将自己从runloop中移除。
+除了基于端口的源，Cocoa还定义了一个自定义的输入源，允许您在任何线程上执行选择器。与基于端口的源一样，在目标线程上序列化执行选择器请求，解决了在一个线程上运行多个方法时可能出现的许多同步问题。与基于端口的源不同，执行选择器源在执行选择器后将自己从runloop中移除。
 
 当在另一个线程上执行选择器时，目标线程必须有一个活跃的runloop。对于您创建的线程，这意味着需要你自己手动运行runloop。但是，因为主线程启动了它自己的runloop，所以只要应用程序调用应用程序委托的`applicationDidFinishLaunching:`方法，您就可以开始对该线程发出调用。每次runloop都会处理所有在队列中的Selector，而不是在每次循环迭代中处理一个。
 
@@ -90,7 +90,7 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 ## RunLoop Observers
 
-与在适当的异步或同步事件发生时触发的源相反，runLoop o  bservers在runloop本身执行期间的特定位置触发。 您可以使用runLoop observers来让线程准备处理给定的事件，或者在线程进入睡眠之前做某些操作。你可以将以下事件与runLoop observers关联:
+与在适当的异步或同步事件发生时触发的源相反，runLoop o bservers在runloop本身执行期间的特定位置触发。 您可以使用runLoop observers来让线程准备处理给定的事件，或者在线程进入睡眠之前做某些操作。你可以将以下事件与runLoop observers关联:
 
 - The entrance to the run loop. 
 - When the run loop is about to process a timer.
@@ -133,7 +133,7 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 # 什么时候使用RunLoop
 
-只有在为应用程序创建辅助线程时，才需要显式地运行runloop。应用程序主线程的runloop是基础结构的关键部分。应用程序框架提供了运行主应用程序循环的代码，并自动启动该循环。UIApplication在iOS(或NSApplication在OS X)中的run方法作为正常启动序列的一部分来启动应用程序的主循环。如果你使用Xcode模板项目来创建你的应用，你不应该显式地调用这些例程。
+**只有在为应用程序创建辅助线程时，才需要显式地运行runloop。应用程序主线程的runloop是基础结构的关键部分。应用程序框架提供了运行主应用程序循环的代码，并自动启动该循环。UIApplication在iOS(或NSApplication在OS X)中的run方法作为正常启动序列的一部分来启动应用程序的主循环**。如果你使用Xcode模板项目来创建你的应用，你不应该显式地调用这些例程。
 
 
 
@@ -141,7 +141,7 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 * 使用port或自定义输入源与其他线程通信
 * 在线程上使用计时器
-* 在Cocoa应用程序中使用任何``performSelector`… `方法
+* 在Cocoa应用程序中使用任何`performSelector… `方法
 * 线程需要周期性执行任务
 
 如果您选择使用runloop，配置和设置是简单的。但是，与所有线程编程一样，您应该有计划在适当的情况下退出辅助线程。让线程退出总比强制终止线程好。
