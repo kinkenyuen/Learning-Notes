@@ -10,8 +10,10 @@
 ## Threading Programming Guide
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
 * [Thread Management (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/线程管理.md) 介绍OS X的线程技术以及如何使用它们
+* [Run Loops (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/RunLoop.md)
 
-<!--* [Thread Management (译)]()
+<!--*
+
 * [Run Loops (译)]()
 * [Synchronization (译)]()
 * [Thread Safety Summary (译)]()-->
