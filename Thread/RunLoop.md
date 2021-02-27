@@ -205,15 +205,650 @@ runloop对象提供了添加输入源、定时器和runloop observer到runloop�
 
 ## 开启RunLoop
 
+应用程序中的辅助线程才需要手动启动runloop。一个runloop必须至少有一个输入源或计时器来监视。如果没有附加，则runloop立即退出。有几种方法可以开始runloop，包括以下几种:
+
+* Unconditionally (无条件地)
+* With a set time limit
+* In a particular mode
+
+无条件地进入runloop是最简单的选择，但也是最不可取的选择。无条件地运行runloop会将线程置于永久循环中，这使您几乎无法控制runloop本身。您可以添加和删除输入源和计时器，但停止runloop的唯一方法是杀死它。没有办法在自定义模式中运行runloop。
+
+与其无条件地运行runloop，不如使用超时值运行runloop。当使用超时值时，runloop将一直运行，直到事件到达或分配的时间到期。如果事件到达，则将该事件分派给处理程序进行处理，然后runloop退出。然后，代码可以重新启动runloop来处理下一个事件。如果所分配的时间过期了，您可以简单地重新启动runloop或使用这段时间来做任何需要的管理工作。
+
+除了超时值之外，您还可以使用特定模式运行runloop。模式和超时值不是互斥的，在启动runloop时都可以使用。模式限制向runloop交付事件的源的类型。
+
+清单3-2展示了线程的主入口例程的框架版本。这个例子的关键部分展示了runloop的基本结构。本质上，您将输入源和计时器添加到runloop中，然后重复调用其中一个例程来启动runloop。每次runloop例程返回时，都要检查是否出现了任何可能导致退出线程的条件。示例使用Core Foundation runloop例程，以便检查返回结果并确定runloop退出的原因。如果您正在使用Cocoa，并且不需要检查返回值，您也可以使用NSRunLoop类的方法以类似的方式运行runloop。
+
+清单3-2 运行一个runloop
+
+```objective-c
+- (void)skeletonThreadMain
+{
+    // Set up an autorelease pool here if not using garbage collection.
+    BOOL done = NO;
+ 
+    // Add your sources or timers to the run loop and do any other setup.
+ 
+    do
+    {
+        // Start the run loop but return after each source is handled.
+        SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
+ 
+        // If a source explicitly stopped the run loop, or if there are no
+        // sources or timers, go ahead and exit.
+        if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished))
+            done = YES;
+ 
+        // Check for any other exit conditions here and set the
+        // done variable as needed.
+    }
+    while (!done);
+ 
+    // Clean up code here. Be sure to release any allocated autorelease pools.
+}
+```
+
+可以递归地运行runloop。换句话说，你可以调用CFRunLoopRun、CFRunLoopRunInMode或任何NSRunLoop方法来从输入源或计时器的处理程序例程中启动runloop。在执行此操作时，您可以使用runloop的任何模式，包括外部runloop正在使用的模式。
+
 ## 退出RunLoop
+
+有两种方法可以在runloop处理完一个事件**之前**退出:
+
+* 配置runloop以使用超时值运行。(到点就结束)
+* 主动通知runloop要退出
+
+指定超时值可以让runloop在退出之前完成所有正常处理，包括向runloop observer发送通知。
+
+使用CFRunLoopStop函数显式地停止runloop会产生类似超时的结果。runloop发送剩余的runloop notifications，然后退出。不同的是，您可以无条件地在运行中的runloop中使用这种技术。
+
+尽管删除runloop的输入源和计时器也可能导致runloop退出，但这不是停止runloop的可靠方法。一些系统例程将输入源添加到runloop中以处理所需的事件。因为您的代码可能不知道这些输入源，因此无法删除它们，也就不能这样退出runloop。
 
 ## 线程安全和RunLoop对象
 
+线程安全性取决于您使用哪个API来操作runloop。Core Foundation中的函数通常是线程安全的，可以从任何线程调用。如果你在配置runloop后做一些线程相关的操作，那么最好只在runloop所在线程上执行。
+
+> If you are performing operations that alter the configuration of the run loop, however, it is still good practice to do so from the thread that owns the run loop whenever possible.
+
+Cocoa NSRunLoop类本身并不像它的核心基础类那样线程安全。如果你使用NSRunLoop类来修改你的runloop，你应该只从拥有那个runloop的同一个线程中这样做。向属于不同线程的runloop添加输入源或计时器可能会导致代码崩溃或以意外的方式运行。
+
 # 配置RunLoop源
+
+下面的小节展示了如何在Cocoa和Core Foundation中设置不同类型的输入源。
 
 ## 定义自定义输入源
 
+创建自定义输入源需要定义以下内容:
+
+* The information you want your input source to process.（希望输入源处理的信息。）
+* A scheduler routine to let interested clients know how to contact your input source.(调度程序，让感兴趣的客户知道如何联系您的输入源。)
+* A handler routine to perform requests sent by any clients.(A handler routine to perform requests sent by any clients.)
+* A cancellation routine to invalidate your input source.(使输入源失效的取消例程。)
+
+因为您创建了一个自定义输入源来处理自定义信息，所以实际的配置被设计得非常灵活。调度程序、处理程序和取消例程是自定义输入源几乎总是需要的关键例程。然而，其余的大部分输入源行为都发生在这些处理程序例程之外。例如，由您定义将数据传递到输入源以及将输入源的存在传递给其他线程的机制。
+
+图3-2显示了自定义输入源的配置示例。在本例中，应用程序的主线程维护对输入源的引用、该输入源的自定义命令缓冲区以及配置了输入源的runloop。**当主线程有一个任务想要交给工作线程时，它会向命令缓冲区发送一个命令以及工作线程启动任务所需的任何信息。(因为主线程和工作线程的输入源都可以访问命令缓冲区，所以访问必须同步。) ** 一旦发出命令，主线程向输入源发出信号，并唤醒工作线程的runloop。在接收到唤醒命令后，runloop调用输入源的处理程序，该处理程序处理在命令缓冲区中找到的命令。
+
+图3-2 操作自定义输入源
+
+![custominputsource](/Users/kinken/Documents/Learning-Notes/Thread/imgs/runloop/custominputsource.jpg)
+
+下面几节将解释实现上图中的自定义输入源，并显示需要实现的关键代码。
+
+### 定义输入源
+
+定义自定义输入源需要使用Core Foundation例程来配置runloop源并将其附加到runloop。尽管基本的处理程序是基于C的函数，但这并不妨碍您封装这些函数，并使用Objective-C或c++来实现代码体。
+
+图3-2中引入的输入源使用一个Objective-C对象来管理命令缓冲区并与runloop协调。**清单3-3展示了该对象的定义。RunLoopSource对象管理一个命令缓冲区，并使用该缓冲区接收来自其他线程的消息。这个清单还展示了RunLoopContext对象的定义，它实际上只是一个容器对象，用于将RunLoopSource对象和runloop引用传递给应用程序的主线程。**
+
+清单3-3 自定义输入源对象定义
+
+```objective-c
+@interface RunLoopSource : NSObject
+{
+    CFRunLoopSourceRef runLoopSource;
+    NSMutableArray* commands;
+}
+ 
+- (id)init;
+- (void)addToCurrentRunLoop;
+- (void)invalidate;
+ 
+// Handler method
+- (void)sourceFired;
+ 
+// Client interface for registering commands to process
+- (void)addCommand:(NSInteger)command withData:(id)data;
+- (void)fireAllCommandsOnRunLoop:(CFRunLoopRef)runloop;
+ 
+@end
+ 
+// These are the CFRunLoopSourceRef callback functions.
+void RunLoopSourceScheduleRoutine (void *info, CFRunLoopRef rl, CFStringRef mode);
+void RunLoopSourcePerformRoutine (void *info);
+void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode);
+ 
+// RunLoopContext is a container object used during registration of the input source.
+@interface RunLoopContext : NSObject
+{
+    CFRunLoopRef        runLoop;
+    RunLoopSource*        source;
+}
+@property (readonly) CFRunLoopRef runLoop;
+@property (readonly) RunLoopSource* source;
+ 
+- (id)initWithSource:(RunLoopSource*)src andLoop:(CFRunLoopRef)loop;
+@end
+```
+
+尽管Objective-C代码管理输入源的自定义数据，但将输入源附加到runloop需要基于c的回调函数。当您将runloop源附加到runloop时，将调用第一个函数，如清单3-4所示。因为这个输入源只有一个客户机(主线程)，所以它使用调度器函数发送消息，以便将自己注册到该线程上的应用程序委托中。当委托想要与输入源通信时，它使用RunLoopContext对象中的信息来完成此操作。
+
+清单3-4 调度运行循环源 
+
+```objective-c
+void RunLoopSourceScheduleRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
+{
+    RunLoopSource* obj = (RunLoopSource*)info;
+    AppDelegate*   del = [AppDelegate sharedAppDelegate];
+    RunLoopContext* theContext = [[RunLoopContext alloc] initWithSource:obj andLoop:rl];
+ 
+    [del performSelectorOnMainThread:@selector(registerSource:)
+                                withObject:theContext waitUntilDone:NO];
+}
+```
+
+最重要的回调例程之一是当输入源有信号时用来处理自定义数据的例程。清单3-5显示了与RunLoopSource对象相关联的执行回调例程。此函数只是将执行工作的请求转发给sourceFired方法，该方法然后处理命令缓冲区中存在的任何命令。
+
+清单3-5 在输入源中执行的工作
+
+```objective-c
+void RunLoopSourcePerformRoutine (void *info)
+{
+    RunLoopSource*  obj = (RunLoopSource*)info;
+    [obj sourceFired];
+}
+```
+
+如果你使用CFRunLoopSourceInvalidate函数从它的runloop中移除输入源，系统会调用你的输入源的取消例程。您可以使用这个例程来通知客户机您的输入源不再有效，并且应该删除对它的任何引用。清单3-6显示了用RunLoopSource对象注册的取消回调例程。此函数将另一个RunLoopContext对象发送给应用程序委托，但这一次要求委托删除对运行循环源的引用。
+
+清单3-6 使输入源失效
+
+```objective-c
+void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
+{
+    RunLoopSource* obj = (RunLoopSource*)info;
+    AppDelegate* del = [AppDelegate sharedAppDelegate];
+    RunLoopContext* theContext = [[RunLoopContext alloc] initWithSource:obj andLoop:rl];
+ 
+    [del performSelectorOnMainThread:@selector(removeSource:)
+                                withObject:theContext waitUntilDone:YES];
+}
+```
+
+> **Note:** The code for the application delegate’s `registerSource:` and `removeSource:` methods is shown in [Coordinating with Clients of the Input Source](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW37). 
+
+### 添加输入源到runloop
+
+清单3-7显示了RunLoopSource类的init和addToCurrentRunLoop方法。init方法创建CFRunLoopSourceRef 不透明类型，该类型实际上必须附加到runloop中。它将RunLoopSource对象本身作为上下文信息传递，这样回调例程就有一个指向该对象的指针。直到工作线程调用addtocurrenttrunloop方法，输入源的添加才会触发，此时会调用RunLoopSourceScheduleRoutine回调函数。输入源添加到runloop后，线程可以运行它的runloop来等待它。
+
+清单3-7 添加runloop源
+
+```objective-c
+- (id)init
+{
+    CFRunLoopSourceContext    context = {0, self, NULL, NULL, NULL, NULL, NULL,
+                                        &RunLoopSourceScheduleRoutine,
+                                        RunLoopSourceCancelRoutine,
+                                        RunLoopSourcePerformRoutine};
+ 
+    runLoopSource = CFRunLoopSourceCreate(NULL, 0, &context);
+    commands = [[NSMutableArray alloc] init];
+ 
+    return self;
+}
+ 
+- (void)addToCurrentRunLoop
+{
+    CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+    CFRunLoopAddSource(runLoop, runLoopSource, kCFRunLoopDefaultMode);
+}
+
+```
+
+### 协调客户端的输入来源
+
+为了使您的输入源有用，您需要对它进行操作，并从另一个线程向它发出信号。输入源的全部意义在于将其关联的线程置于休眠状态，直到有事情要做。这就需要让应用程序中的其他线程知道输入源，并有办法与之通信。输入源的全部目的是让其关联的线程进入休眠状态，直到有事要做。这就需要让应用程序中的其他线程知道输入源，并有办法与之通信。
+
+通知客户端有关输入源的一种方法是在输入源第一次添加到runloop中时发送注册请求。
+
+> You can register your input source with as many clients as you want, or you can simply register it with some central agency that then vends your input source to interested clients. 
+
+清单3-8展示了应用程序委托定义并在调用RunLoopSource对象的scheduler函数时调用的注册方法。该方法接收RunLoopSource对象提供的RunLoopContext对象，并将其添加到源列表中。这个清单还展示了在从其runloop中删除输入源时用于注销输入源的例程。
+
+清单3-8 向应用程序委托注册和删除输入源
+
+```objc
+- (void)registerSource:(RunLoopContext*)sourceInfo;
+{
+    [sourcesToPing addObject:sourceInfo];
+}
+ 
+- (void)removeSource:(RunLoopContext*)sourceInfo
+{
+    id    objToRemove = nil;
+ 
+    for (RunLoopContext* context in sourcesToPing)
+    {
+        if ([context isEqual:sourceInfo])
+        {
+            objToRemove = context;
+            break;
+        }
+    }
+ 
+    if (objToRemove)
+        [sourcesToPing removeObject:objToRemove];
+}
+```
+
+> **Note:** The callback functions that call the methods in the preceding listing are shown in [Listing 3-4](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW32) and [Listing 3-6](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW34). 
+
+### 向输入源发送信号
+
+在将数据传递给输入源之后，客户端必须向源发出信号，并唤醒它的runloop。向源发送信号可以让runloop知道源可以被处理。而且，由于信号发生时线程可能处于休眠状态，因此您应该总是显式地唤醒runloop。
+
+清单3-9展示了RunLoopSource对象的fireCommandsOnRunLoop方法。当准备为输入源执行添加到buffer中的命令时，客户端会调用该方法。
+
+清单3-9 唤醒runloop
+
+```objective-c
+- (void)fireCommandsOnRunLoop:(CFRunLoopRef)runloop
+{
+    CFRunLoopSourceSignal(runLoopSource);
+    CFRunLoopWakeUp(runloop);
+}
+```
+
+> **Note:** You should never try to handle a `SIGHUP` or other type of process-level signal by messaging a custom input source. The Core Foundation functions for waking up the run loop are not signal safe and should not be used inside your application’s signal handler routines. For more information about signal handler routines, see the `sigaction` man page.
+
 ## 配置计时器源
+
+要创建计时器源，您所要做的就是创建一个计时器对象并在运行循环中调度它。在Cocoa中，你可以使用NSTimer类来创建新的计时器对象，而在Core Foundation中，你可以使用CFRunLoopTimerRef opaque类型。在内部，NSTimer类只是Core Foundation的扩展，它提供了一些便利功能，例如使用同一方法创建和安排计时器的功能。
+
+在Cocoa中，你可以使用这些类方法中的任何一种来一次性创建和调度一个计时器:
+
+* `scheduledTimerWithTimeInterval:target:selector:userInfo:repeats:`
+* `scheduledTimerWithTimeInterval:invocation:repeats:`
+
+这些方法创建计时器，并将其添加到默认模式(`NSDefaultRunLoopMode`)下的当前线程runloop中。你也可以通过创建你的`NSTimer`对象来手动调度一个计时器，然后使用NSRunLoop的`addTimer:forMode:`方法将它添加到运行循环中。这两种做法基本上是相同的，但后者你可以配置你的计时器。例如，如果您手动创建计时器并将其添加到runloop中，那么您可以使用默认模式之外的模式来完成此操作。清单3-10展示了如何使用这两种技术创建计时器。第一个计时器的初始延迟为1秒，但之后每0.1秒定时触发一次。第二个计时器在最初的0.2秒延迟后开始触发，然后每0.2秒触发一次。
+
+清单3-10 创建并调度计时器
+
+```objective-c
+NSRunLoop* myRunLoop = [NSRunLoop currentRunLoop];
+ 
+// Create and schedule the first timer.
+NSDate* futureDate = [NSDate dateWithTimeIntervalSinceNow:1.0];
+NSTimer* myTimer = [[NSTimer alloc] initWithFireDate:futureDate
+                        interval:0.1
+                        target:self
+                        selector:@selector(myDoFireTimer1:)
+                        userInfo:nil
+                        repeats:YES];
+[myRunLoop addTimer:myTimer forMode:NSDefaultRunLoopMode];
+ 
+// Create and schedule the second timer.
+[NSTimer scheduledTimerWithTimeInterval:0.2
+                        target:self
+                        selector:@selector(myDoFireTimer2:)
+                        userInfo:nil
+                        repeats:YES];
+```
+
+清单3-11展示了使用核心Foundation函数配置计时器所需的代码。虽然这个示例没有在上下文结构中传递任何用户定义的信息，但您可以使用这个结构来传递计时器所需的任何自定义数据。
+
+清单3-11使用Core Foundation创建和调度计时器
+
+```c
+CFRunLoopRef runLoop = CFRunLoopGetCurrent();
+CFRunLoopTimerContext context = {0, NULL, NULL, NULL, NULL};
+CFRunLoopTimerRef timer = CFRunLoopTimerCreate(kCFAllocatorDefault, 0.1, 0.3, 0, 0,
+                                        &myCFTimerCallback, &context);
+ 
+CFRunLoopAddTimer(runLoop, timer, kCFRunLoopCommonModes);
+
+```
+
+
 
 ## 配置基于端口的输入源
 
+Cocoa和Core Foundation都提供了基于端口的对象，用于线程或进程之间的通信。下面几节向您展示如何使用几种不同类型的端口设置端口通信。
+
+### 配置NSMachPort对象
+
+**要使用NSMachPort对象建立本地连接，需要创建port对象并将其添加到主线程的运行循环中。在启动辅助线程时，将相同的对象传递给线程的入口点函数。辅助线程可以使用相同的对象将消息发送回主线程。**
+
+实现主线程代码
+
+清单3-12展示启动辅助工作线程的主线程代码。由于Cocoa框架执行了许多配置端口和运行循环的中间步骤，因此launchThread方法明显比它的核心基础等效方法短(清单3-17);然而，两者的行为几乎是相同的。一个不同之处在于，这个方法不是将本地端口的名称发送给辅助线程，而是直接发送NSPort对象。
+
+清单3-12 主线程启动方法
+
+```objc
+- (void)launchThread
+{
+    NSPort* myPort = [NSMachPort port];
+    if (myPort)
+    {
+        // This class handles incoming port messages.
+        [myPort setDelegate:self];
+ 
+        // Install the port as an input source on the current run loop.
+        [[NSRunLoop currentRunLoop] addPort:myPort forMode:NSDefaultRunLoopMode];
+ 
+        // Detach the thread. Let the worker release the port.
+        [NSThread detachNewThreadSelector:@selector(LaunchThreadWithPort:)
+               toTarget:[MyWorkerClass class] withObject:myPort];
+    }
+}
+```
+
+为了在线程之间建立双向通信通道，您可能希望工作线程在签入消息中将其自己的本地端口发送到主线程。 接收到签入消息可以使您的主线程知道在启动第二个线程时一切进展顺利，还为您提供了一种向该线程发送更多消息的方式。
+
+清单3-13展示了主线程的handlePortMessage：方法。 当数据到达线程自己的本地端口时，将调用此方法。 当签入消息到达时，该方法直接从端口消息中检索辅助线程的端口，并将其保存以供以后使用。
+
+```objc
+#define kCheckinMessage 100
+ 
+// Handle responses from the worker thread.
+- (void)handlePortMessage:(NSPortMessage *)portMessage
+{
+    unsigned int message = [portMessage msgid];
+    NSPort* distantPort = nil;
+ 
+    if (message == kCheckinMessage)
+    {
+        // Get the worker thread’s communications port.
+        distantPort = [portMessage sendPort];
+ 
+        // Retain and save the worker port for later use.
+        [self storeDistantPort:distantPort];
+    }
+    else
+    {
+        // Handle other messages.
+    }
+}
+```
+
+实现辅助线程代码
+
+对于辅助工作线程，您必须配置该线程并使用指定的端口将信息传回给主线程。
+
+清单3-14 展示了设置工作线程的代码。在为线程创建一个自动释放池之后，该方法创建一个worker对象来驱动线程执行。worker对象的sendCheckinMessage:方法(如清单3-15所示)为工作线程创建一个本地端口，并将签入消息发送回主线程。
+
+```objc
++(void)LaunchThreadWithPort:(id)inData
+{
+    NSAutoreleasePool*  pool = [[NSAutoreleasePool alloc] init];
+ 
+    // Set up the connection between this thread and the main thread.
+    NSPort* distantPort = (NSPort*)inData;
+ 
+    MyWorkerClass*  workerObj = [[self alloc] init];
+    [workerObj sendCheckinMessage:distantPort];
+    [distantPort release];
+ 
+    // Let the run loop process things.
+    do
+    {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                            beforeDate:[NSDate distantFuture]];
+    }
+    while (![workerObj shouldExit]);
+ 
+    [workerObj release];
+    [pool release];
+}
+```
+
+当使用NSMachPort时，本地和远程线程可以使用同一个端口对象在线程之间进行单向通信。换句话说，一个线程创建的本地端口对象成为另一个线程的远程端口对象。
+
+清单3-15 使用Mach端口发送签入消息
+
+```objc
+// Worker thread check-in method
+- (void)sendCheckinMessage:(NSPort*)outPort
+{
+    // Retain and save the remote port for future use.
+    [self setRemotePort:outPort];
+ 
+    // Create and configure the worker thread port.
+    NSPort* myPort = [NSMachPort port];
+    [myPort setDelegate:self];
+    [[NSRunLoop currentRunLoop] addPort:myPort forMode:NSDefaultRunLoopMode];
+ 
+    // Create the check-in message.
+    NSPortMessage* messageObj = [[NSPortMessage alloc] initWithSendPort:outPort
+                                         receivePort:myPort components:nil];
+ 
+    if (messageObj)
+    {
+        // Finish configuring the message and send it immediately.
+        [messageObj setMsgId:setMsgid:kCheckinMessage];
+        [messageObj sendBeforeDate:[NSDate date]];
+    }
+}
+```
+
+### 配置NSMessagePort对象
+
+要使用NSMessagePort对象建立本地连接，不能简单地在线程之间传递端口对象。必须根据名称获取远程消息端口。在Cocoa中实现这一点需要用特定的名称注册本地端口，然后将该名称传递给远程线程，以便它可以获得适当的端口对象进行通信。清单3-16展示了希望使用消息端口的情况下的端口创建和注册过程。
+
+清单3-16 注册消息端口
+
+```objc
+NSPort* localPort = [[NSMessagePort alloc] init];
+ 
+// Configure the object and add it to the current run loop.
+[localPort setDelegate:self];
+[[NSRunLoop currentRunLoop] addPort:localPort forMode:NSDefaultRunLoopMode];
+ 
+// Register the port using a specific name. The name must be unique.
+NSString* localPortName = [NSString stringWithFormat:@"MyPortName"];
+[[NSMessagePortNameServer sharedInstance] registerPort:localPort
+                     name:localPortName];
+```
+
+### 在Core Foundation中配置基于端口的输入源
+
+本节展示如何使用Core Foundation在应用程序的主线程和工作线程之间建立双向通信通道。
+
+清单3-17展示了应用程序主线程调用来启动工作线程的代码。代码要做的第一件事是设置CFMessagePortRef opaque类型，以侦听来自工作线程的消息。工作线程需要端口的名称来进行连接，以便将字符串值传递给工作线程的入口点函数。端口名称在当前用户上下文中通常应该是唯一的;否则，你可能会遇到冲突。
+
+清单3-17 将Core Foundation消息端口附加到一个新线程
+
+```objc
+#define kThreadStackSize        (8 *4096)
+ 
+OSStatus MySpawnThread()
+{
+    // Create a local port for receiving responses.
+    CFStringRef myPortName;
+    CFMessagePortRef myPort;
+    CFRunLoopSourceRef rlSource;
+    CFMessagePortContext context = {0, NULL, NULL, NULL, NULL};
+    Boolean shouldFreeInfo;
+ 
+    // Create a string with the port name.
+    myPortName = CFStringCreateWithFormat(NULL, NULL, CFSTR("com.myapp.MainThread"));
+ 
+    // Create the port.
+    myPort = CFMessagePortCreateLocal(NULL,
+                myPortName,
+                &MainThreadResponseHandler,
+                &context,
+                &shouldFreeInfo);
+ 
+    if (myPort != NULL)
+    {
+        // The port was successfully created.
+        // Now create a run loop source for it.
+        rlSource = CFMessagePortCreateRunLoopSource(NULL, myPort, 0);
+ 
+        if (rlSource)
+        {
+            // Add the source to the current run loop.
+            CFRunLoopAddSource(CFRunLoopGetCurrent(), rlSource, kCFRunLoopDefaultMode);
+ 
+            // Once installed, these can be freed.
+            CFRelease(myPort);
+            CFRelease(rlSource);
+        }
+    }
+ 
+    // Create the thread and continue processing.
+    MPTaskID        taskID;
+    return(MPCreateTask(&ServerThreadEntryPoint,
+                    (void*)myPortName,
+                    kThreadStackSize,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    &taskID));
+}
+```
+
+安装了端口并启动了线程后，主线程可以在等待线程签入的同时继续它的常规执行。当签入消息到达时，它被分派到主线程的MainThreadResponseHandler函数，如清单3-18所示。这个函数提取工作线程的端口名，并为未来的通信创建管道。
+
+清单3-18 接收签入消息
+
+```objective-c
+#define kCheckinMessage 100
+ 
+// Main thread port message handler
+CFDataRef MainThreadResponseHandler(CFMessagePortRef local,
+                    SInt32 msgid,
+                    CFDataRef data,
+                    void* info)
+{
+    if (msgid == kCheckinMessage)
+    {
+        CFMessagePortRef messagePort;
+        CFStringRef threadPortName;
+        CFIndex bufferLength = CFDataGetLength(data);
+        UInt8* buffer = CFAllocatorAllocate(NULL, bufferLength, 0);
+ 
+        CFDataGetBytes(data, CFRangeMake(0, bufferLength), buffer);
+        threadPortName = CFStringCreateWithBytes (NULL, buffer, bufferLength, kCFStringEncodingASCII, FALSE);
+ 
+        // You must obtain a remote message port by name.
+        messagePort = CFMessagePortCreateRemote(NULL, (CFStringRef)threadPortName);
+ 
+        if (messagePort)
+        {
+            // Retain and save the thread’s comm port for future reference.
+            AddPortToListOfActiveThreads(messagePort);
+ 
+            // Since the port is retained by the previous function, release
+            // it here.
+            CFRelease(messagePort);
+        }
+ 
+        // Clean up.
+        CFRelease(threadPortName);
+        CFAllocatorDeallocate(NULL, buffer);
+    }
+    else
+    {
+        // Process other messages.
+    }
+ 
+    return NULL;
+}
+```
+
+主线程配置好之后，剩下的唯一事情就是让新创建的工作线程创建自己的端口并签入。清单3-19展示了工作线程的入口点函数。该函数提取主线程的端口名，并使用它创建回主线程的远程连接。然后，该函数为自己创建一个本地端口，将该端口添加在线程的runloop上，并向包含本地端口名称的主线程发送签入消息。
+
+清单3-19 设置线程结构
+
+```objc
+OSStatus ServerThreadEntryPoint(void* param)
+{
+    // Create the remote port to the main thread.
+    CFMessagePortRef mainThreadPort;
+    CFStringRef portName = (CFStringRef)param;
+ 
+    mainThreadPort = CFMessagePortCreateRemote(NULL, portName);
+ 
+    // Free the string that was passed in param.
+    CFRelease(portName);
+ 
+    // Create a port for the worker thread.
+    CFStringRef myPortName = CFStringCreateWithFormat(NULL, NULL, CFSTR("com.MyApp.Thread-%d"), MPCurrentTaskID());
+ 
+    // Store the port in this thread’s context info for later reference.
+    CFMessagePortContext context = {0, mainThreadPort, NULL, NULL, NULL};
+    Boolean shouldFreeInfo;
+    Boolean shouldAbort = TRUE;
+ 
+    CFMessagePortRef myPort = CFMessagePortCreateLocal(NULL,
+                myPortName,
+                &ProcessClientRequest,
+                &context,
+                &shouldFreeInfo);
+ 
+    if (shouldFreeInfo)
+    {
+        // Couldn't create a local port, so kill the thread.
+        MPExit(0);
+    }
+ 
+    CFRunLoopSourceRef rlSource = CFMessagePortCreateRunLoopSource(NULL, myPort, 0);
+    if (!rlSource)
+    {
+        // Couldn't create a local port, so kill the thread.
+        MPExit(0);
+    }
+ 
+    // Add the source to the current run loop.
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), rlSource, kCFRunLoopDefaultMode);
+ 
+    // Once installed, these can be freed.
+    CFRelease(myPort);
+    CFRelease(rlSource);
+ 
+    // Package up the port name and send the check-in message.
+    CFDataRef returnData = nil;
+    CFDataRef outData;
+    CFIndex stringLength = CFStringGetLength(myPortName);
+    UInt8* buffer = CFAllocatorAllocate(NULL, stringLength, 0);
+ 
+    CFStringGetBytes(myPortName,
+                CFRangeMake(0,stringLength),
+                kCFStringEncodingASCII,
+                0,
+                FALSE,
+                buffer,
+                stringLength,
+                NULL);
+ 
+    outData = CFDataCreate(NULL, buffer, stringLength);
+ 
+    CFMessagePortSendRequest(mainThreadPort, kCheckinMessage, outData, 0.1, 0.0, NULL, NULL);
+ 
+    // Clean up thread data structures.
+    CFRelease(outData);
+    CFAllocatorDeallocate(NULL, buffer);
+ 
+    // Enter the run loop.
+    CFRunLoopRun();
+}
+```
+
+一旦进入runloop，发送到线程端口的所有未来事件都将由`ProcessClientRequest`函数处理。该函数的实现取决于线程所做的工作类型，这里没有显示。
+
+# 源文档
+
+[Run Loops](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW10)
