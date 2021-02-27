@@ -47,7 +47,7 @@ runloop就像它的名字描述那样，它是线程进入并用于触发回调�
 ## 输入源
 输入源异步地向线程传递事件。**事件的来源取决于输入源的类型，输入源通常是两类之一**。基于端口的输入源监视应用程序的Mach端口。自定义输入源监视事件的自定义源。就runloop而言，输入源是基于端口的还是自定义的并不重要。系统通常实现两种类型的输入源，您可以按原样使用。这两个源之间唯一的区别是它们如何发出信号。**基于端口的源由内核自动发出信号，自定义源必须从另一个线程手动发出信号。**
 
-当您创建输入源时，您将它分配给runloop的一个或多个模式。模式会影响这些输入源，大多数情况下，您会在default模式下运行运行循环，但是您也可以指定自定义模式。如果输入源不在当前监视模式下，则它生成的任何事件都将被保存，直到runloop以输入源对应的模式运行。
+当您创建输入源时，您将它分配给runloop的一个或多个模式。模式会影响这些输入源，大多数情况下，您会在default模式下运行runloop，但是您也可以指定自定义模式。如果输入源不在当前监视模式下，则它生成的任何事件都将被保存，直到runloop以输入源对应的模式运行。
 
 以下部分介绍了一些输入源。
 
@@ -55,7 +55,7 @@ runloop就像它的名字描述那样，它是线程进入并用于触发回调�
 
 Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端口的输入源提供了内置支持。例如，在Cocoa中，您根本不需要直接创建输入源。您只需创建一个端口对象，并使用NSPort的方法将该端口添加到runloop中。port对象为您处理所需输入源的创建和配置。
 
-在Core Foundation中，您必须手动创建端口及其运行循环源。在这两种情况下，都使用与端口不透明类型(CFMachPortRef、CFMessagePortRef或CFSocketRef)相关联的函数来创建适当的对象。
+在Core Foundation中，您必须手动创建端口及其runloop源。在这两种情况下，都使用与端口不透明类型(CFMachPortRef、CFMessagePortRef或CFSocketRef)相关联的函数来创建适当的对象。
 
 ### 自定义源
 
@@ -67,7 +67,7 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 除了基于端口的源，Cocoa还定义了一个自定义的输入源，允许您在任何线程上执行选择器。与基于端口的源一样，在目标线程上序列化执行选择器请求，解决了在一个线程上运行多个方法时可能出现的许多同步问题。与基于端口的源不同，执行选择器源在执行选择器后将自己从runloop中移除。
 
-当在另一个线程上执行选择器时，目标线程必须有一个活跃的runloop。对于您创建的线程，这意味着需要你自己手动运行runloop。但是，因为主线程启动了它自己的runloop，所以只要应用程序调用应用程序委托的`applicationDidFinishLaunching:`方法，您就可以开始对该线程发出调用。每次runloop都会处理所有在队列中的Selector，而不是在每次循环迭代中处理一个。
+**当在另一个线程上执行选择器时，目标线程必须有一个活跃的runloop。**对于您创建的线程，这意味着需要你自己手动运行runloop。但是，因为主线程启动了它自己的runloop，所以只要应用程序调用应用程序委托的`applicationDidFinishLaunching:`方法，您就可以开始对该线程发出调用。每次runloop都会处理所有在队列中的Selector，而不是在每次循环迭代中处理一个。
 
 表3-2列出了定义在NSObject上的方法，这些方法可以用于在其他线程上执行选择器。因为这些方法是在NSObject上声明的，你可以在任何你能访问Objective-C对象的线程中使用它们，包括POSIX线程。这些方法实际上并没有创建新线程来执行选择器。
 
@@ -90,7 +90,7 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 ## RunLoop Observers
 
-与在适当的异步或同步事件发生时触发的源相反，runLoop o bservers在runloop本身执行期间的特定位置触发。 您可以使用runLoop observers来让线程准备处理给定的事件，或者在线程进入睡眠之前做某些操作。你可以将以下事件与runLoop observers关联:
+与在适当的异步或同步事件发生时触发的源相反，runLoop observers在runloop本身执行期间的特定位置触发。 您可以使用runLoop observers来让线程准备处理给定的事件，或者在线程进入睡眠之前做某些操作。你可以将以下事件与runLoop observers关联:
 
 - The entrance to the run loop. 
 - When the run loop is about to process a timer.
@@ -161,7 +161,7 @@ runloop对象提供了添加输入源、定时器和runloop observer到runloop�
 
 ## 配置RunLoop对象
 
-**在辅助线程上运行runloop之前，你必须为runloop至少添加一个输入源或计时器。**如果runloop没有任何源，它会立刻退出。
+**在辅助线程上运行runloop之前，你必须为runloop至少添加一个输入源或计时器**。如果runloop没有任何源，它会立刻退出。
 
 除了添加源之外，你也可以添加runloop observers，使用它们可以检测runloop的不同阶段状态。要添加runloop observer，你可以创建一个`CFRunLoopObserverRef`不透明类型，然后使用`CFRunLoopAddObserver`函数添加到你的runloop。**runloop observers必须使用`CoreFoundation`创建，即使是Cocoa应用程序。**
 
@@ -281,16 +281,16 @@ Cocoa NSRunLoop类本身并不像它的核心基础类那样线程安全。如�
 
 * The information you want your input source to process.（希望输入源处理的信息。）
 * A scheduler routine to let interested clients know how to contact your input source.(调度程序，让感兴趣的客户知道如何联系您的输入源。)
-* A handler routine to perform requests sent by any clients.(A handler routine to perform requests sent by any clients.)
+* A handler routine to perform requests sent by any clients.(一个处理程序例程，用于执行任何客户端发送的请求。)
 * A cancellation routine to invalidate your input source.(使输入源失效的取消例程。)
 
 因为您创建了一个自定义输入源来处理自定义信息，所以实际的配置被设计得非常灵活。调度程序、处理程序和取消例程是自定义输入源几乎总是需要的关键例程。然而，其余的大部分输入源行为都发生在这些处理程序例程之外。例如，由您定义将数据传递到输入源以及将输入源的存在传递给其他线程的机制。
 
-图3-2显示了自定义输入源的配置示例。在本例中，应用程序的主线程维护对输入源的引用、该输入源的自定义命令缓冲区以及配置了输入源的runloop。**当主线程有一个任务想要交给工作线程时，它会向命令缓冲区发送一个命令以及工作线程启动任务所需的任何信息。(因为主线程和工作线程的输入源都可以访问命令缓冲区，所以访问必须同步。) ** 一旦发出命令，主线程向输入源发出信号，并唤醒工作线程的runloop。在接收到唤醒命令后，runloop调用输入源的处理程序，该处理程序处理在命令缓冲区中找到的命令。
+图3-2显示了自定义输入源的配置示例。在本例中，应用程序的主线程维护对输入源的引用、该输入源的自定义命令缓冲区以及配置了输入源的runloop。**当主线程有一个任务想要交给工作线程时，它会向命令缓冲区发送一个命令以及工作线程启动任务所需的任何信息**。(因为主线程和工作线程的输入源都可以访问命令缓冲区，所以访问必须同步。)  一旦发出命令，主线程向输入源发出信号，并唤醒工作线程的runloop。在接收到唤醒命令后，runloop调用输入源的处理程序，该处理程序处理在命令缓冲区中找到的命令。
 
 图3-2 操作自定义输入源
 
-![custominputsource](/Users/kinken/Documents/Learning-Notes/Thread/imgs/runloop/custominputsource.jpg)
+![custominputsource](./imgs/runloop/custominputsource.jpg)
 
 下面几节将解释实现上图中的自定义输入源，并显示需要实现的关键代码。
 
