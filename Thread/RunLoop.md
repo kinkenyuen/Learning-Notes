@@ -148,9 +148,60 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 # 使用RunLoop对象
 
+runloop对象提供了添加输入源、定时器和runloop observer到runloop并运行的主要接口。每个线程都有与其相关的runloop对象。在Cocoa中，这个对象是NSRunLoop类的实例。在底层应用程序中，它是一个指针，指向CFRunLoopRef这个不透明类型。
+
 ## 获取RunLoop对象
 
+要获取当前线程的runloop，可以使用以下方法:
+
+* 在Cocoa应用中，使用`currentRunLoop`类方法获取一个runloop对象
+* 使用`CFRunLoopGetCurrent`函数
+
+虽然两者不是`toll-free bridged`类型，但你可以从`NSRunLoop`对象中获取一个`CFRunLoopRef`不透明类型，`NSRunLoop`类定义了一个`getCFRunLoop`方法，该方法返回一个`CFRunLoopRef`类型，这个返回类型可以传给`Core Foundation`里的函数。因为它们引用的是同一个runloop对象，你可以根据需求混合使用这两种runloop对象。
+
 ## 配置RunLoop对象
+
+**在辅助线程上运行runloop之前，你必须为runloop至少添加一个输入源或计时器。**如果runloop没有任何源，它会立刻退出。
+
+除了添加源之外，你也可以添加runloop observers，使用它们可以检测runloop的不同阶段状态。要添加runloop observer，你可以创建一个`CFRunLoopObserverRef`不透明类型，然后使用`CFRunLoopAddObserver`函数添加到你的runloop。**runloop observers必须使用`CoreFoundation`创建，即使是Cocoa应用程序。**
+
+清单3-1展示了在线程入口函数中为当前线程的runloop添加runloop observer。这个例子的目的是展示如何创建runloop observer，代码中简单地设置了一个runloop observer去监视所有的runloop活动。这里的回调只是简单展示runloop的活动当它执行计时器请求时。(回调没有展示出来)
+
+清单3-1 创建runloop observer
+
+```objective-c
+- (void)threadMain
+{
+    // The application uses garbage collection, so no autorelease pool is needed.
+    NSRunLoop* myRunLoop = [NSRunLoop currentRunLoop];
+ 
+    // Create a run loop observer and attach it to the run loop.
+    CFRunLoopObserverContext  context = {0, self, NULL, NULL, NULL};
+    CFRunLoopObserverRef    observer = CFRunLoopObserverCreate(kCFAllocatorDefault,
+            kCFRunLoopAllActivities, YES, 0, &myRunLoopObserver, &context);
+ 
+    if (observer)
+    {
+        CFRunLoopRef    cfLoop = [myRunLoop getCFRunLoop];
+        CFRunLoopAddObserver(cfLoop, observer, kCFRunLoopDefaultMode);
+    }
+ 
+    // Create and schedule the timer.
+    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self
+                selector:@selector(doFireTimer:) userInfo:nil repeats:YES];
+ 
+    NSInteger    loopCount = 10;
+    do
+    {
+        // Run the run loop 10 times to let the timer fire.
+        [myRunLoop runUntilDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+        loopCount--;
+    }
+    while (loopCount);
+}
+```
+
+对于长期运行的线程，最好添加至少一个输入源去接收消息。虽然你可以只添加一个计时器源到runloop中，一旦计时器出发，不久后它就会失效，这就会导致runloop退出。附加一个重复计时器可以使运行循环运行更长的时间，但需要定期触发计时器以唤醒线程，这实际上是另一种轮询形式。相反，一个输入源让线程休眠，等待事件发生。
 
 ## 开启RunLoop
 
