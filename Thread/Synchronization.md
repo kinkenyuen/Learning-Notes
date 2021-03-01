@@ -291,7 +291,7 @@ while (moreToDo) {
 
 作为预防措施，@synchronized块隐式地向受保护的代码添加了一个异常处理程序。这个处理程序在抛出异常时自动释放互斥锁。这意味着为了使用@synchronized指令，你还必须在你的代码中启用Objective-C异常处理。如果您不希望隐式异常处理程序造成额外的开销，则应该考虑使用**锁**。
 
-更多关于`@synchronized`指令，参见*[The Objective-C Programming Language](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html#//apple_ref/doc/uid/TP30001163)*.
+更多关于`@synchronized`指令，参见[The Objective-C Programming Language](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html#//apple_ref/doc/uid/TP30001163).
 
 ## 使用其他Cocoa锁
 
