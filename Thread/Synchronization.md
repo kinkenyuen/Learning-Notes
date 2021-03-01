@@ -178,7 +178,51 @@ anObject = [myArray objectAtIndex:0];
 
 # 使用原子操作
 
+非阻塞同步是一种执行某些类型操作和避免锁开销的方法。尽管锁是同步两个线程的有效方法，但获取锁是一个相对昂贵的操作，即使在无争用的情况下也是如此。相比之下，许多原子操作只需要一小部分时间就可以完成，而且可以像锁一样有效。
 
+原子操作允许您对32位或64位值执行简单的数学和逻辑操作。这些操作依赖于特殊的硬件指令(和一个可选的内存屏障)，以确保给定的操作在再次访问受影响的内存之前完成。在多线程的情况下，您应该始终使用包含内存屏障的原子操作，以确保线程之间的内存正确同步。
+
+原子数学运算和逻辑操作及其函数名如表4-3所示。这些函数都在`/usr/include/libkern/ osatomics .h`头文件中声明，你也可以在那里找到完整的语法。这些函数的64位版本仅在64位进程中可用。
+
+表4-3 原子数学运算和逻辑运算
+
+| 操作       | 函数名                                                       | 描述                                                         |
+| ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| 相加       | OSAtomicAdd32 <br>OSAtomicAdd32Barrier <br/>OSAtomicAdd64<br/>OSAtomicAdd64Barrier | 将两个整数值相加，并将结果存储在指定的一个变量中。           |
+| 自增       | OSAtomicIncrement32 <br>OSAtomicIncrement32Barrier<br/>OSAtomicIncrement64<br/>OSAtomicIncrement64Barrier | 将指定的整数值加1。                                          |
+| 自减       | OSAtomicDecrement32<br>OSAtomicDecrement32Barrier <br/>OSAtomicDecrement64<br/>OSAtomicDecrement64Barrier | 将指定的整数值递减1。                                        |
+| 逻辑或     | OSAtomicOr32<br>OSAtomicOr32Barrier                          | 在指定的32位值和32位掩码之间执行逻辑或。                     |
+| 逻辑与     | OSAtomicAnd32<br>OSAtomicAnd32Barrier                        | 在指定的32位值和32位掩码之间执行逻辑与。                     |
+| 逻辑异或   | OSAtomicXor32<br>OSAtomicXor32Barrier                        | 在指定的32位值和32位掩码之间执行逻辑异或。                   |
+| 比较和交换 | OSAtomicCompareAndSwap32<br>OSAtomicCompareAndSwap32Barrier<br/>OSAtomicCompareAndSwap64<br/>OSAtomicCompareAndSwap64Barrier<br/>OSAtomicCompareAndSwapPtr<br/>OSAtomicCompareAndSwapPtrBarrier<br/>OSAtomicCompareAndSwapInt<br/>OSAtomicCompareAndSwapIntBarrier<br/>OSAtomicCompareAndSwapLong<br/>OSAtomicCompareAndSwapLongBarrier | 将变量与指定的旧值进行比较。如果两个值相等，这个函数将指定的新值赋给变量;否则，它什么也不做。比较和赋值作为一个原子操作完成，函数返回一个布尔值，指示交换是否实际发生。 |
+| 测试并设置 | OSAtomicTestAndSet<br>OSAtomicTestAndSetBarrier              | Tests a bit in the specified variable, sets that bit to 1, and returns the value of the old bit as a Boolean value. Bits are tested according to the formula (0x80 >> (n & 7)) of byte ((char*)address + (n >> 3)) where n is the bit number and address is a pointer to the variable. This formula effectively breaks up the variable into 8-bit sized chunks and orders the bits in each chunk in reverse. For example, to test the lowest-order bit (bit 0) of a 32-bit integer, you would actually specify 7 for the bit number; similarly, to test the highest order bit (bit 32), you would specify 24 for the bit number. |
+| 测试和清空 | OSAtomicTestAndClear<br>OSAtomicTestAndClearBarrier          | Tests a bit in the specified variable, sets that bit to 0, and returns the value of the old bit as a Boolean value. Bits are tested according to the formula `(0x80 >> (n & 7)) `of byte `((char*)address + (n >> 3))` where `n` is the bit number and `address` is a pointer to the variable. This formula effectively breaks up the variable into 8-bit sized chunks and orders the bits in each chunk in reverse. For example, to test the lowest-order bit (bit 0) of a 32-bit integer, you would actually specify 7 for the bit number; similarly, to test the highest order bit (bit 32), you would specify 24 for the bit number. |
+
+大多数原子函数的行为应该是相对简单的，正如您所期望的那样。然而，清单4-1展示了原子测试与设置操作和比较与交换操作的行为，它们稍微复杂一些。对`OSAtomicTestAndSet`函数的前三个调用演示了如何在整数值上使用位操作公式，其结果可能与您预期的不同。最后两个调用显示了`OSAtomicCompareAndSwap32`函数的行为。在所有情况下，这些函数都是在没有其他线程操作值的无争用情况下调用的。
+
+清单4-1 执行原子操作
+
+```c
+int32_t  theValue = 0;
+OSAtomicTestAndSet(0, &theValue);
+// theValue is now 128.
+ 
+theValue = 0;
+OSAtomicTestAndSet(7, &theValue);
+// theValue is now 1.
+ 
+theValue = 0;
+OSAtomicTestAndSet(15, &theValue)
+// theValue is now 256.
+ 
+OSAtomicCompareAndSwap32(256, 512, &theValue);
+// theValue is now 512.
+ 
+OSAtomicCompareAndSwap32(256, 1024, &theValue);
+// theValue is still 512.
+```
+
+有关原子操作的信息，请参阅[atomic](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/atomic.3.html#//apple_ref/doc/man/3/atomic)和`/usr/include/libkern/ osatomich`头文件。
 
 # 使用锁
 
