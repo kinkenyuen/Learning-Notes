@@ -7,16 +7,12 @@
 # iOS基础
 [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
-## Threading Programming Guide(理论)
+## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
 * [Thread Management (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/线程管理.md) 介绍OS X的线程技术以及如何使用它们
 * [Run Loops (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/RunLoop.md) 介绍如何在线程中处理事件循环 
 * [Synchronization (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/Synchronization.md)描述同步问题以及防止多线程损坏数据、程序崩溃的手段
-
-<!--
-
-* [Thread Safety Summary (译)]()
-* -->
+* [Appendix A: Thread Safety Summary (译)]() 提供了OS X和iOS及其一些关键框架固有的线程安全性的高级总结。
 
 # runtime
 
