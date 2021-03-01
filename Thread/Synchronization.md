@@ -226,9 +226,246 @@ OSAtomicCompareAndSwap32(256, 1024, &theValue);
 
 # 使用锁
 
+锁是线程编程的基本同步工具。锁使您能够轻松地保护大段代码，从而确保代码的正确性。OS X和iOS为所有应用程序类型提供了基本的互斥锁，Foundation框架为特殊情况定义了互斥锁的一些附加变量。下面几节将向您展示如何使用几种锁类型。
+
+## 使用POSIX互斥锁
+
+`POSIX`互斥锁在任何应用程序中都非常容易使用。要创建互斥锁，需要声明并初始化一个`pthread_mutex_t`结构体。要锁定和解锁互斥锁，可以使用`pthread_mutex_lock`和`pthread_mutex_unlock`函数。清单4-2显示了初始化和使用`POSIX`线程互斥锁所需的基本代码。使用完锁后，只需调用`pthread_mutex_destroy`来释放锁数据结构。
+
+清单4-2 使用posix互斥锁
+
+```c
+pthread_mutex_t mutex;
+void MyInitFunction()
+{
+    pthread_mutex_init(&mutex, NULL);
+}
+ 
+void MyLockingFunction()
+{
+    pthread_mutex_lock(&mutex);
+    // Do work.
+    pthread_mutex_unlock(&mutex);
+}
+```
+
+> 注意:前面的代码是一个简化的示例，目的是展示POSIX线程互斥函数的基本用法。您自己的代码应该检查这些函数返回的错误代码，并适当地处理它们。
+
+## 使用NSLock类
+
+`NSLock`对象为Cocoa应用实现了一个基本的互斥锁。所有锁的接口(包括`NSLock`)实际上是由`NSLocking protocol`定义的，它定义了锁定和解锁方法。您可以使用这些方法获取和释放锁，就像使用任何互斥锁一样。
+
+除了标准的锁定行为，NSLock类还添加了`tryLock`和`lockBeforeDate:`方法。`tryLock`方法尝试获取锁，但如果锁不可用，则不会阻塞;这种情况下，该方法只返回NO。`lockBeforeDate:`方法尝试获取锁，但如果没有在指定的时间限制内获得锁，则解除线程阻塞(并返回NO)。
+
+下面的例子展示了如何使用NSLock对象来协调界面更新，这些显示的数据是由几个线程计算的。如果线程不能立即获得锁，它将继续计算，直到它能够获得锁并更新界面。
+
+```objc
+BOOL moreToDo = YES;
+NSLock *theLock = [[NSLock alloc] init];
+...
+while (moreToDo) {
+    /* Do another increment of calculation */
+    /* until there’s no more to do. */
+    if ([theLock tryLock]) {
+        /* Update display used by all threads. */
+        [theLock unlock];
+    }
+}
+```
+
+## 使用@synchronized指令
+
+@synchronized指令是Objective-C代码中动态创建互斥锁的一种方便方法。@synchronized指令做了任何其他互斥锁都会做的事情——防止不同的线程在同一时间获取相同的锁。但是，在这种情况下，您不必直接创建互斥锁或锁对象。相反，你可以简单地使用任何Objective-C对象作为锁令牌，如下面的例子所示:
+
+```objc
+- (void)myMethod:(id)anObj
+{
+    @synchronized(anObj)
+    {
+        // Everything between the braces is protected by the @synchronized directive.
+    }
+}
+```
+
+传递给`@synchronized`指令的对象是用来区分受保护块的唯一标识符。如果在两个不同的线程中执行上述方法，在每个线程中为`anObj`参数传递不同的对象，每个线程都将获得其锁并继续处理，而不会被另一个线程阻塞。但是，如果在这两种情况下传递相同的对象，其中一个线程将首先获得锁，另一个线程将阻塞，直到第一个线程完成任务释放锁。
+
+作为预防措施，@synchronized块隐式地向受保护的代码添加了一个异常处理程序。这个处理程序在抛出异常时自动释放互斥锁。这意味着为了使用@synchronized指令，你还必须在你的代码中启用Objective-C异常处理。如果您不希望隐式异常处理程序造成额外的开销，则应该考虑使用**锁**。
+
+更多关于`@synchronized`指令，参见*[The Objective-C Programming Language](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjectiveC/Introduction/introObjectiveC.html#//apple_ref/doc/uid/TP30001163)*.
+
+## 使用其他Cocoa锁
+
+下面几节描述了使用其他几种类型的Cocoa锁的过程。
+
+### 使用NSRecursiveLock（递归锁）
+
+`NSRecursiveLock`类定义了一个锁，可以被同一个线程多次获取，而不会导致线程死锁。递归锁跟踪成功获取锁的次数。每次成功获取锁必须通过相应的调用来平衡以解锁锁。只有当所有的锁和解锁调用都被平衡时，锁才会被释放，以便其他线程可以获得它。
+
+顾名思义，这种类型的锁通常在递归函数中使用，以防止递归阻塞线程。在非递归情况下，您可以类似地使用它来调用函数，这些函数的语义要求它们也必须具有锁定功能。下面是一个简单的递归函数的例子，它通过递归获得锁。如果没有在此代码中使用NSRecursiveLock对象，那么当再次调用该函数时，线程将死锁。
+
+```objc
+NSRecursiveLock *theLock = [[NSRecursiveLock alloc] init];
+ 
+void MyRecursiveFunction(int value)
+{
+    [theLock lock];
+    if (value != 0)
+    {
+        --value;
+        MyRecursiveFunction(value);
+    }
+    [theLock unlock];
+}
+ 
+MyRecursiveFunction(5);
+```
+
+> 注意:因为在所有锁调用与解锁调用平衡后，才会释放递归锁，所以您应该仔细权衡使用性能锁的决定与潜在的性能影响。在一段较长的时间内保持任何锁都可能导致其他线程阻塞，直到递归完成。如果您可以重写代码以消除递归或消除使用递归锁的需要，那么您可能会获得更好的性能。
+
+### 使用NSConditionLock(条件锁)
+
+`NSConditionLock`对象定义了一个互斥锁，可以用特定的值锁定和解锁。您不应该将这种类型的锁与**条件**混淆。行为与条件有些相似，但实现方式非常不同。
+
+通常，当线程需要按特定顺序执行任务时，例如当一个线程产生另一个线程使用的数据时，您可以使用`NSConditionLock`对象。当生产者执行时，消费者使用特定于程序的条件获取锁。(条件本身只是一个您定义的整数值。)当生产者完成时，它解锁锁并将锁条件设置为适当的整数值来唤醒消费者线程，然后消费者线程继续处理数据。
+
+`NSConditionLock`对象响应的锁定和解锁方法可以以任何组合方式使用。例如，你可以将一个锁定消息和`unlockWithCondition:`匹配，或者一个`lockWhenCondition`消息与解锁匹配。后一种组合可以解锁锁，但可能不会释放等待特定条件值的任何线程。
+
+下面的示例显示如何使用条件锁处理生产者-消费者问题。假设一个应用程序包含一个数据队列。生产者线程将数据添加到队列中，消费者线程从队列中提取数据。生产者不需要等待特定的条件，但它必须等待锁可用，这样它才能安全地向队列添加数据。
+
+```objc
+id condLock = [[NSConditionLock alloc] initWithCondition:NO_DATA];
+ 
+while(true)
+{
+    [condLock lock];
+    /* Add data to the queue. */
+    [condLock unlockWithCondition:HAS_DATA];
+}
+```
+
+因为锁的初始条件被设置为NO_DATA，所以生产者线程在初始时获得锁应该没有问题。它用数据填充队列，并将条件设置为HAS_DATA。在随后的迭代中，生产者线程可以在到达时添加新数据，而不管队列是空的还是仍然有一些数据。它唯一阻塞的时候是消费者线程从队列中提取数据的时候。
+
+因为消费者线程必须有数据要处理，所以它使用特定的条件等待队列。当生产者将数据放入队列时，消费者线程唤醒并获取其锁。然后，它可以从队列中提取一些数据并更新队列状态。下面的示例展示了消费者线程处理循环的基本结构。
+
+```objc
+while (true)
+{
+    [condLock lockWhenCondition:HAS_DATA];
+    /* Remove data from the queue. */
+    [condLock unlockWithCondition:(isEmpty ? NO_DATA : HAS_DATA)];
+ 
+    // Process the data locally.
+}
+```
+
+
+
+### 使用NSDistributedLock(分布式锁)
+
+`NSDistributedLock`类可以被多个主机上的多个应用程序使用，以限制对某些共享资源(如文件)的访问。锁本身实际上是一个互斥锁，它是使用文件系统项(比如文件或目录)实现的。为了让`NSDistributedLock`对象可用，这个锁必须被所有使用它的应用程序写入。这通常意味着将其放在一个文件系统上，运行该应用程序的所有计算机都可以访问该文件系统。
+
+与其他类型的锁不同，`NSDistributedLock`不符合`NSLocking protocol`，因此没有锁定方法。锁定方法将阻止线程的执行，并要求系统以预定速率轮询锁定。 `NSDistributedLock`不会将这种限制加在您的代码上，而是提供一个`tryLock`方法，并让您决定是否进行轮询。
+
+因为它是使用文件系统实现的，所以`NSDistributedLock`对象不会被释放，除非所有者显式地释放它。如果您的应用程序在持有分布式锁时崩溃，其他客户机将无法访问受保护的资源。在这种情况下，您可以使用`breakLock`方法来打破现有的锁，以便获得它。但是，通常应该避免解锁，除非您确定所拥有的进程已经死亡并且不能释放锁。
+
+与其他类型的锁一样，当你使用完`NSDistributedLock`对象后，你可以通过调用`unlock`方法来释放它。
 
 
 # 使用条件(Conditions)
 
+条件是一种特殊类型的锁，可用于同步操作必须进行的顺序。它们与互斥锁有一个微妙的区别。等待某个条件的线程将保持阻塞状态，直到该条件被另一个线程显式发出信号为止。
 
+由于在实现操作系统时涉及到的微妙之处，即使您的代码实际上没有发出信号，条件锁也允许在错误的成功情况下返回。为了避免这些虚假信号引起的问题，应该始终在条件锁中使用谓词。谓词是确定线程继续运行是否安全的更具体的方法。该条件只是保持线程处于休眠状态，直到信令线程可以设置谓词。下面几节将向您展示如何在代码中使用条件。
+
+## 使用NSCondition类
+
+`NSCondition`类提供了与`POSIX`条件相同的语义，但将所需的锁和条件数据结构封装在一个对象中。结果是一个对象，你可以像锁互斥一样锁住它，然后像等待条件一样等待它。
+
+清单4-3显示了一个代码片段，演示了等待`NSCondition`对象的事件序列。`cocoaconcondition`变量包含一个`NSCondition`对象，`timeToDoWork`变量是一个整数，在发出条件信号之前从另一个线程递增。
+
+清单4-3 使用Cocoa condition
+
+```objc
+[cocoaCondition lock];
+while (timeToDoWork <= 0)
+    [cocoaCondition wait];
+ 
+timeToDoWork--;
+ 
+// Do real work here.
+ 
+[cocoaCondition unlock];
+```
+
+清单4-4显示了用于指示Cocoa条件和递增谓词变量的代码。在发出信号之前，您应该总是锁定条件。
+
+```objc
+[cocoaCondition lock];
+timeToDoWork++;
+[cocoaCondition signal];
+[cocoaCondition unlock];
+```
+
+## 使用POSIX Conditions
+
+POSIX线程条件锁需要同时使用条件数据结构和互斥锁。尽管这两种锁结构是分开的，但互斥锁在运行时与条件结构密切相关。等待信号的线程应该总是同时使用相同的互斥锁和条件结构。更改配对可能会导致错误。
+
+清单4-5显示了条件和谓词的基本初始化和用法。在初始化条件和互斥锁之后，等待线程使用`ready_to_go`变量作为谓词进入`while`循环。只有当谓词被设置并且条件被触发时，等待的线程才会苏醒并开始工作。
+
+清单4-5 使用POSIX condition
+
+```objc
+pthread_mutex_t mutex;
+pthread_cond_t condition;
+Boolean     ready_to_go = true;
+ 
+void MyCondInitFunction()
+{
+    pthread_mutex_init(&mutex);
+    pthread_cond_init(&condition, NULL);
+}
+ 
+void MyWaitOnConditionFunction()
+{
+    // Lock the mutex.
+    pthread_mutex_lock(&mutex);
+ 
+    // If the predicate is already set, then the while loop is bypassed;
+    // otherwise, the thread sleeps until the predicate is set.
+    while(ready_to_go == false)
+    {
+        pthread_cond_wait(&condition, &mutex);
+    }
+ 
+    // Do work. (The mutex should stay locked.)
+ 
+    // Reset the predicate and release the mutex.
+    ready_to_go = false;
+    pthread_mutex_unlock(&mutex);
+}
+```
+
+信令线程负责设置谓词和向条件锁发送信号。清单4-6显示了实现此行为的代码。在这个例子中，条件在互斥锁内部被通知，以防止等待条件的线程之间发生竞争。
+
+清单4-6 向条件锁发送信号
+
+```c
+void SignalThreadUsingCondition()
+{
+    // At this point, there should be work for the other thread to do.
+    pthread_mutex_lock(&mutex);
+    ready_to_go = true;
+ 
+    // Signal the other thread to begin work.
+    pthread_cond_signal(&condition);
+ 
+    pthread_mutex_unlock(&mutex);
+}
+```
+
+> 注意:前面的代码是一个简化的示例，目的是展示POSIX线程条件函数的基本用法。您自己的代码应该检查这些函数返回的错误代码，并适当地处理它们。
+
+# 源文档
+
+[Synchronization](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW14)
 
