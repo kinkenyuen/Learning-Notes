@@ -13,6 +13,7 @@
 * [Run Loops (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/RunLoop.md) 介绍如何在线程中处理事件循环 
 * [Synchronization (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/Synchronization.md)描述同步问题以及防止多线程损坏数据、程序崩溃的手段
 * [Appendix A: Thread Safety Summary (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/线程安全总结.md) 提供了OS X和iOS及其一些关键框架固有的线程安全性的高级总结。
+* [Glossary (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/术语表.md) 术语表
 
 # runtime
 
