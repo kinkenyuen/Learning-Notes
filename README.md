@@ -5,6 +5,11 @@
 * [位域](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
 # iOS基础
+
+## 内存管理
+
+* [Advanced Memory Management Programming Guide(译)]()
+
 * [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
 ## 线程编程指南(理论)
@@ -28,7 +33,9 @@
 
 * [iOS开发·RunLoop源码与用法完全解析](https://cloud.tencent.com/developer/article/1332254)
 
-* [自定义runloop source0](https://github.com/kinkenyuen/RunLoop-Custom-Source0.git)
+* [自定义runloop source0/1](https://github.com/kinkenyuen/RunLoop-Custom-Source0.git)
+
+* [使用runloop observer监控主线程runloop状态(卡顿)]()
 
 # runtime
 
