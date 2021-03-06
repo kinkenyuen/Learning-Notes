@@ -5,7 +5,7 @@
 * [位域](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
 # iOS基础
-[Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
+* [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
@@ -16,7 +16,11 @@
 * [Glossary (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/术语表.md) 术语表
 
 # runloop
-[自定义runloop source0](https://github.com/kinkenyuen/RunLoop-Custom-Source0.git)
+* [深入理解RunLoop](https://blog.ibireme.com/2015/05/18/runloop/)
+
+* [iOS开发·RunLoop源码与用法完全解析](https://cloud.tencent.com/developer/article/1332254)
+
+* [自定义runloop source0](https://github.com/kinkenyuen/RunLoop-Custom-Source0.git)
 
 # runtime
 
