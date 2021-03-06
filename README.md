@@ -8,7 +8,7 @@
 
 ## 内存管理
 
-* [Advanced Memory Management Programming Guide(译)]()
+* [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Advanced_Memory_Management_Programming_Guide(译).md)
 
 * [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
