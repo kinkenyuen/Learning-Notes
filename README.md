@@ -1,6 +1,3 @@
-# 学习笔记
-分类记录、总结工作学习上的笔记（原创or非原创）
-
 # C/C++
 * [位域](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
