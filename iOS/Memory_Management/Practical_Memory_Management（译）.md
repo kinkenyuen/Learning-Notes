@@ -121,3 +121,123 @@
 
 <img src="./imgs/retaincycles_2x.png" alt="2" style="zoom:50%;" />
 
+解决循环引用的问题是使用弱引用。**弱引用是一种非归属关系，其中源对象不拥有被引用对象的所有权**。
+
+然而，为了保持对象图的完整性，必须在某个地方存在强引用（如果只有弱引用，那么Page和Paragraph可能没有任何所有者，因此这两个对象就会马上被回收）。因此，Cocoa建立了一个约定，**即"parent"角色的对象应该保持对其"children"角色的对象的强引用，而"children"角色的对象则保持对其"parent"角色的对象的弱引用**。
+
+因此，在图1中，`Document`对`Page`强引用(`retain`)，而Page对Document弱引用(`not retain`)
+
+Cocoa中使用弱引用的例子包括但不限于:**tableview的datasource，outline view items，通知observers，各种各样的targets和代理**。
+
+在向弱引用对象发送消息时，需要小心。如果在对象被释放后向其发送消息，则应用程序可能会崩溃。对于对象何时有效，你要心中有数。在大多数情况下，弱引用对象知道其他对象对它的弱引用，就像循环引用一样，并负责在释放时通知其他对象。例如，当您向通知中心注册对象时，**通知中心将存储对该对象的弱引用**，并在发出适当的通知时向它发送消息。当该对象释放时，你必须将它从通知中心注销（移除），以防止通知中心向一个不存在的对象发送消息。同样地，当一个大力对象被释放时，你需要通过发送一个带有`nil`参数的`setDelegate:` 消息给另一个对象来移除代理绑定关系。这些消息通常从对象的`dealloc`方法发送。
+
+# 避免对正在使用的对象做释放操作
+
+`Cocoa`的所有权策略指定`received objects`通常应该在调用方法的整个作用域内保持有效。同样地，在一个方法内返回一个`received object`，也不必担心它被释放。对象的`getter`方法返回缓存的实例变量或计算的值对应用程序来说并不重要。**重要的是对象在你需要它的时候，保持有效**。
+
+这条规则偶尔也有例外，主要分为两类。
+
+1. 当一个对象从基本集合类型中移除时
+
+```objective-c
+heisenObject = [array objectAtIndex:n];
+[array removeObjectAtIndex:n];
+// heisenObject could now be invalid.
+```
+
+当一个对象从一个基本集合类中移除时，它会被发送一个`release`(而不是`autorelease`)消息。如果集合是被删除对象的唯一所有者，那么被删除的对象(示例中的heisenObject)将立即被释放。
+
+2. 当"parent"角色的对象被释放了
+
+```
+id parent = <#create a parent object#>;
+// ...
+heisenObject = [parent child] ;
+[parent release]; // Or, for example: self.parent = nil;
+// heisenObject could now be invalid.
+```
+
+在某些情况下，你从另一个对象中持有了`parent`对象，然后在某处直接或间接地释放了`parent`对象,并且`parent`对象是`children`对象的唯一所有者，那么`children`(本例中的`heisenObject`)也会同时被释放（假设在`parent`对象的`dealloc`方法中发送的是`release`消息，而不是`autorelease`消息）。
+
+为了防止这些情况发生，你在接收到`heisenObject`时`retain`它，当你使用完它时`release`它。例如:
+
+```objective-c
+heisenObject = [[array objectAtIndex:n] retain];
+[array removeObjectAtIndex:n];
+// Use heisenObject...
+[heisenObject release];
+```
+
+# 不要使用dealloc来管理稀缺资源
+
+您通常不应该在`dealloc`方法中管理稀缺资源，如文件描述符、网络连接和缓冲区或缓存。特别是你不应该设计这样的类，理想当然地认为`dealloc`会被调用。`dealloc`的调用可能会被延迟或忽略，因为出现了内存泄漏，对象`dealloc`方法没有被调起。
+
+相反，如果你有一个类，它的实例管理稀缺资源，那么你应该设计你的应用程序，以便你知道何时不再需要资源，然后可以告诉实例在某一时刻进行清理工作。在这之后，你通常会释放实例，然后`dealloc`就会调用。即使你不释放实例，也不会出现上面提到的问题。
+
+如果你试图在`dealloc`之上附加资源管理，可能会出现问题。例如:
+
+1. 对对象图分解的依赖关系进行排序
+
+   对象图分解机制本质上是非有序的。虽然你期望对象以一个特定的顺序释放，但是，这会让你的程序变得不健壮。例如，如果一个对象意外地自动释放而不是被释放，那么销毁顺序可能会改变，这可能会导致意外的结果。
+
+2. 不回收稀缺资源。
+
+   内存泄漏是应该修复的错误，但它们通常不会立即导致错误。但是，如果在你希望释放稀缺资源的时候没有释放它们，那么你可能会遇到更严重的问题。例如，如果应用程序用完文件描述符，用户可能无法保存数据。
+
+3. 清除在错误线程上执行的逻辑。
+
+   如果一个对象在一个意外的时间被自动释放，它将在它所在的任何线程的自动释放池块上被释放。这对于只能从一个线程访问的资源来说是致命的。
+
+# 容器类拥有它们所包含的对象
+
+当您将对象添加到集合(例如数组、字典或集合)时，集合将获得该对象的所有权。当对象从集合中移除或集合本身被释放时，集合将放弃所有权。因此，例如，如果你想创建一个数字数组，你可以这样做:
+
+```objective-c
+NSMutableArray *array = <#Get a mutable array#>;
+NSUInteger i;
+// ...
+for (i = 0; i < 10; i++) {
+    NSNumber *convenienceNumber = [NSNumber numberWithInteger:i];
+    [array addObject:convenienceNumber];
+}
+```
+
+在本例中，您没有调用`alloc`，因此不需要调用`release`。不需要`retain`新数字(`convenienceNumber`)，因为数组会`retain`这些数字。
+
+```objective-c
+NSMutableArray *array = <#Get a mutable array#>;
+NSUInteger i;
+// ...
+for (i = 0; i < 10; i++) {
+    NSNumber *allocedNumber = [[NSNumber alloc] initWithInteger:i];
+    [array addObject:allocedNumber];
+    [allocedNumber release];
+}
+```
+
+在这种情况下，您确实需要在`for`循环的范围内发送一个`release`消息给`allocedNumber`，以平衡`alloc`。因为数组在`addObject:`添加时`retain`了这个数字，所以它在数组中不会被释放。
+
+>To understand this, put yourself in the position of the person who implemented the collection class.You want to make sure that no objects you’re given to look after disappear out from under you, so you send them a retain message as they’re passed in. If they’re removed, you have to send a balancing release message, and any remaining objects should be sent a release message during your own dealloc method.
+
+# 所有权策略是使用引用计数来实现的
+
+所有权策略是通过引用计数来实现的——通常在`retain`方法之后称为`retain count`。每个对象都有一个`retain count`。
+
+* 当你创建一个对象，它的引用计数为1
+
+* 当你向对象发送`retain`消息，它的引用计数加1
+
+* 当你想对象发送`release`消息，它的引用计数减1
+
+  当你向对象发送`autorelease`消息，它的引用计数在当前`autorelease pool` `pop`之后减1
+
+* 如果对象的引用计数减少到0，它就会被释放。
+
+> 重要提示:主动去查询对象的引用计数是不合理的，参见[retainCount](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Protocols/NSObject/Description.html#//apple_ref/occ/intfm/NSObject/retainCount)。通常返回的结果是误导的，因为你可能不知道哪些框架对象`retain`了你感兴趣的对象。**在调试内存管理问题时，您应该只关心确保您的代码遵循所有权规则**。
+
+
+
+# 源文档
+
+[Practical Memory Management](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW1)
+
