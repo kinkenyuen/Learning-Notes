@@ -76,3 +76,48 @@
 
 还要注意，如果您使用`KVO`，那么以这种方式更改变量是不会触发`KVO`的。
 
+## 不要在初始化方法和dealloc中使用访问器方法
+
+唯一不应该使用访问器方法来设置实例变量的地方是**初始化方法和dealloc**。要用`zero`初始化`count`，你可以这样实现`Counter`的`init`方法：
+
+```objective-c
+- init {
+    self = [super init];
+    if (self) {
+        _count = [[NSNumber alloc] initWithInteger:0];
+    }
+    return self;
+}
+```
+
+为了允许用非0的计数初始化`count`，你可以实现一个`initWithCount:`方法，如下所示:
+
+```objective-c
+- initWithCount:(NSNumber *)startingCount {
+    self = [super init];
+    if (self) {
+        _count = [startingCount copy];
+    }
+    return self;
+}
+```
+
+因为`Counter`类有一个对象实例变量，所以您还必须实现一个`dealloc`方法。它应该通过发送一个`release`消息来放弃任何实例变量的所有权，并且最终调用父类`super`的实现:
+
+```objective-c
+- (void)dealloc {
+    [_count release];
+    [super dealloc];
+}
+```
+
+# 使用弱引用避免循环引用
+
+`retain`一个对象会创建对该对象的强引用。一个对象的所有强引用被解除之前，这个对象不会被释放。如果两个对象彼此之间有强引用（要么直接引用，要么通过其他对象链），就会出现所谓的循环引用问题。
+
+图1中表示的对象关系说明了一个循环引用问题。`Document`对象有一个`Page`对象，`Page`对象有`parent`属性表示它所属的Document。如果`Document`对象对`Page`对象有强引用，而`Page`对象又对`Document`对象有强引用，那么这两个对象都不能被释放，简而言之，两个对象都在等待对方的引用计数变为0。
+
+图1 循环引用示例
+
+<img src="./imgs/retaincycles_2x.png" alt="2" style="zoom:50%;" />
+
