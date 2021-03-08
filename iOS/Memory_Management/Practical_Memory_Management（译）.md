@@ -39,5 +39,40 @@
 }
 ```
 
+## 使用访问器方法设置属性值
 
+假设您想实现一个方法来重置`count`。你有几个选择,第一种实现使用`alloc`创建`NSNumber`实例，因此需要用一个`release`来平衡它。
+
+```objective-c
+- (void)reset {
+    NSNumber *zero = [[NSNumber alloc] initWithInteger:0];
+    [self setCount:zero];
+    [zero release];
+}
+```
+
+第二种实现使用一个便利构造函数来创建一个新的`NSNumber`对象。因此，不需要`retain`或`release`
+
+```objective-c
+- (void)reset {
+    NSNumber *zero = [NSNumber numberWithInteger:0];
+    [self setCount:zero];
+}
+```
+
+注意，两者都使用`set`访问器方法。
+
+以下这种做法可能在某些情况下工作正常，这里没有使用访问器方法，但这样做会导致在某些阶段导致错误（例如，你忘记`retain`或`release`,或者实例变量的内存管理语义发生了改变）
+
+> The following will almost certainly work correctly for simple cases, but as tempting as it may be to eschew accessor methods, doing so will almost certainly lead to a mistake at some stage (for example, when you forget to retain or release, or if the memory management semantics for the instance variable change).
+
+```objective-c
+- (void)reset {
+    NSNumber *zero = [[NSNumber alloc] initWithInteger:0];
+    [_count release];//释放旧值
+    _count = zero;	 //赋值新值，但是需要在合适的时机对_count进行release
+}
+```
+
+还要注意，如果您使用`KVO`，那么以这种方式更改变量是不会触发`KVO`的。
 
