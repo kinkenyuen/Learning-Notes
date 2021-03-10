@@ -5,13 +5,13 @@
 
 ## 内存管理
 
-* [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Advanced_Memory_Management_Programming_Guide(译).md)
+* [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md)
 
-* [Memory Management Policy(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Memory_Management_Policy(译).md)
+* [Memory Management Policy(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Memory_Management_Policy(译).md)
 
-* [Practical Memory Management(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Practical_Memory_Management（译）.md)
+* [Practical Memory Management(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Practical_Memory_Management（译）.md)
 
-* [Using Autorelease Pool Blocks(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Using_Autorelease_Pool_Blocks(译).md)
+* [Using Autorelease Pool Blocks(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Using_Autorelease_Pool_Blocks(译).md)
 
 * [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
 
