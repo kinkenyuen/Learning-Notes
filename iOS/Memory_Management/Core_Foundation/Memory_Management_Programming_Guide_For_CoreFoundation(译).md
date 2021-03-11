@@ -195,3 +195,37 @@ myString = (CFStringRef)CFRetain(myString);
 
 # <span id = "CF">Copy Functions</span> 
 
+通常，当使用`=`操作符将一个变量的值赋值给另一个变量时，会发生标准的复制操作，也可以称为简单赋值操作。例如，表达式`myInt2 = myInt1`将`myInt1`的整型内容从`myInt1`使用的内存复制到`myInt2`使用的内存中。复制操作之后，内存中的两个单独区域包含相同的值。但是，如果试图以这种方式复制`Core Foundation`对象，请注意，**你不会复制对象本身，而只复制对该对象的引用**。
+
+例如，`Core Foundation`的初学者可能认为，要复制`CFString`对象，他们可以使用表达式`myCFString2 = myCFString1`。同样，这个表达式实际上并没有复制字符串数据。因为`myCFString1`和`myCFString2`都必须具有CFStringRef类型，所以这个表达式只复制对对象的引用。在复制操作之后，你将拥有对CFString的引用的两个副本。这种类型的复制非常快，因为只复制引用，但重要的是要记住，以这种方式复制可变对象是危险的。**与使用全局变量的程序一样，如果应用程序的某个部分使用引用的副本更改了对象，则程序中拥有该引用副本的其他部分无法知道数据已更改**。
+
+如果要复制对象，必须使用`Core Foundation`为此专门提供的函数之一。继续`CFString`示例，您将使用`CFStringCreateCopy`创建一个全新的`CFString`对象，该对象包含与原始对象相同的数据。具有" `CreateCopy` "函数的`Core Foundation`类型还提供了" `CreateMutableCopy` "函数，它返回一个可以修改的对象的副本。
+
+## Shallow Copy （浅拷贝）
+
+复制复合对象(如**可以包含其他对象的集合对象**)也必须小心。使用`=`操作符对这些对象执行复制会导致复制对象引用。**与CFString和CFData等简单对象相比，为CFArray和CFSet等复合对象提供的"CreateCopy"函数实际上执行的是浅拷贝**。**对于这些对象，浅拷贝意味着创建一个新的集合对象，但不复制原始集合的内容——只复制对象引用到新容器**。这种类型的复制是有用的，例如，你有一个不可变的数组，你想要重新排序它。在这种情况下，你不想复制所有包含的对象，因为不需要更改它们——为什么要使用额外的内存呢?你仅仅需要的是改变这个不可变的容器（这里指代为数组），这里的风险与复制具有简单类型的对象引用的风险相同（也就是开头描述的风险问题）。
+
+## Deep Copy (深拷贝)
+
+当您想要创建一个全新的复合对象时，您必须执行深拷贝。深拷贝复制复合对象以及它包含的所有对象的内容。`Core Foundation`的当前版本包含一个函数`CFPropertyListCreateDeepCopy`，该函数执行属性列表的深度复制。如果要创建其他结构的全新副本，则可以通过递归遍历复合对象并将其一一复制添加到新副本。在实现此功能时要小心，因为复合对象可能是递归的——它们可能直接或间接包含对自身的引用——这可能导致递归循环。
+
+# Allocators
+
+`Core Foundation`抽象的操作系统服务是内存分配。它使用`Allocators`来实现这个目的。
+
+`Allocators`是为你分配和释放内存的`opaque`对象。您永远不必为`Core Foundation`对象直接分配、重新分配或释放内存——也不应该这样做。你将`Allocators`传递给创建对象的函数;这些函数的名称中带有"`Create`"，例如，`CFStringCreateWithPascalString`。创建函数使用`Allocators`为它们创建的对象分配内存。
+
+在对象的生命周期内，`Allocators`与该对象相关联。如果需要重新分配内存，则对象使用该`Allocators`;当需要释放对象时，则使用`Allocators`进行对象的释放。`Allocators`还用于创建最初创建的对象所需的任何对象。有些函数还允许为特殊目的传入`Allocators`，比如释放临时缓冲区的内存。
+
+`Core Foundation`允许你创建自己的自定义`allocators`。`Core Foundation`还提供了一个`system allocator`，并将该`allocator`初始化为当前线程的默认`allocator`。(每个线程有一个默认的`allocator`。)您可以在代码中的任何时候将自定义`allocator`设置为线程的默认值。然而，`system allocator`是一种很好的通用`allocator`，应该足以应付几乎所有情况。在特殊情况下可能需要自定义`allocator`，比如在Mac OS 9上的某些情况下，或者当性能存在问题时，作为批量`allocator`。除了这些罕见的情况，您既不应该使用自定义`allocator`，也不应该将它们设置为默认值，特别是对于`libraries`。
+
+有关`allocator`的更多信息，特别是关于创建自定义`allocator`的信息，请参见[Creating Custom Allocators](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/Tasks/CustomAllocators.html#//apple_ref/doc/uid/20001154-CJBEHAAG)。
+
+# 备注
+
+原本还有一部分小节，看起来不是很长，就不一一对照翻译，看起来使用场景较少。
+
+# 源文档
+
+[Memory Management Programming Guide for Core Foundation](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/CFMemoryMgmt.html#//apple_ref/doc/uid/10000127-SW1)
+
