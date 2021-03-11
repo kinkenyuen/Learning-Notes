@@ -69,7 +69,7 @@
 
 ## Naming Conventions (命名约定)
 
-有很多方法可以使用`Core Foundation`获得对对象的引用。根据`Core Foundation`所有权策略，你需要知道你否拥有函数返回的对象，以便你知道在内存管理方面应该采取什么操作。`Core Foundation`为其函数建立了一个命名约定，让你确定是否拥有函数返回的对象。简而言之，**如果函数名中包含单词"`Create`"或"`Copy`"，那么你就拥有该对象**。如果函数名包含单词"`Get`"，则不拥有该对象。这些规则在[The Create Rule](#TCR)和[The Get Rule](#TGR)中有更详细的解释。
+有很多方法可以使用`Core Foundation`获得对对象的引用。根据`Core Foundation`所有权策略，你需要知道你否拥有函数返回的对象，以便你知道在内存管理方面应该采取什么操作。`Core Foundation`为其函数建立了一个命名约定，让你确定是否拥有函数返回的对象。简而言之，**如果函数名中包含单词"`Create`"或"`Copy`"，那么你就拥有该对象**。如果函数名包含单词"`Get`"，则不拥有该对象。这些规则在[The Create Rule](#TCR)和[<span id="user-content-TGR">The Get Rule</span> (对象获取引用规则)](#the-get-rule-对象获取引用规则)中有更详细的解释。
 
 > 重要提示：Cocoa为内存管理定义了一套类似的命名约定(参见[Advanced Memory Management Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011i))。Core Foundation命名约定，特别是"create"一词的使用，只适用于返回Core Foundation对象的C函数。Objective-C方法的命名约定受Cocoa的约定控制，不管这个方法返回的是Core Foundation还是Cocoa对象。
 
