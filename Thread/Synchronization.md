@@ -1,3 +1,33 @@
+# 目录
+* [同步](#同步)
+* [同步工具](#同步工具)
+   * [原子操作](#原子操作)
+   * [内存屏障和易失性变量（Memory Barriers and Volatile Variables）](#内存屏障和易失性变量memory-barriers-and-volatile-variables)
+   * [锁](#锁)
+   * [条件(Conditions)](#条件conditions)
+   * [执行Selector例程](#执行selector例程)
+* [同步开销与性能](#同步开销与性能)
+* [线程安全与信号](#线程安全与信号)
+* [线程安全设计技巧](#线程安全设计技巧)
+   * [完全避免同步](#完全避免同步)
+   * [理解同步的限制](#理解同步的限制)
+   * [注意代码正确性的问题](#注意代码正确性的问题)
+   * [注意死锁和活锁](#注意死锁和活锁)
+   * [正确使用易失性变量](#正确使用易失性变量)
+* [使用原子操作](#使用原子操作)
+* [使用锁](#使用锁)
+   * [使用POSIX互斥锁](#使用posix互斥锁)
+   * [使用NSLock类](#使用nslock类)
+   * [使用@synchronized指令](#使用synchronized指令)
+   * [使用其他Cocoa锁](#使用其他cocoa锁)
+      * [使用NSRecursiveLock（递归锁）](#使用nsrecursivelock递归锁)
+      * [使用NSConditionLock(条件锁)](#使用nsconditionlock条件锁)
+      * [使用NSDistributedLock(分布式锁)](#使用nsdistributedlock分布式锁)
+* [使用条件(Conditions)](#使用条件conditions)
+   * [使用NSCondition类](#使用nscondition类)
+   * [使用POSIX Conditions](#使用posix-conditions)
+* [源文档](#源文档)
+
 # 同步
 
 一个应用程序中存在多个线程，这就可能出现从多个执行线程安全访问资源的问题。两个修改同一资源的线程可能会以意想不到的方式相互干扰。例如，一个线程可能会覆盖另一个线程的更改，或将应用程序置于未知且可能无效的状态。如果幸运的话，损坏的资源可能会导致明显的性能问题或崩溃，这些问题比较容易跟踪和修复。但是，如果不幸的话，损坏可能会导致一些微妙的错误，这些错误直到很久以后才显现出来，或者这些错误可能需要重写底层基本代码。
