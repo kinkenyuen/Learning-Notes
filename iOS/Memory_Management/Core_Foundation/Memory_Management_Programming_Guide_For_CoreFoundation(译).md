@@ -1,23 +1,4 @@
-- [介绍](#--)
-- [本文内容](#----)
-- [<span id = "OP">Ownership Policy </span>](#-span-id----op--ownership-policy---span-)
-  * [<span id = "basic">基础内容 </span>](#-span-id----basic---------span-)
-  * [Naming Conventions (命名约定)](#naming-conventions-------)
-  * [<span id = "TCR">The Create Rule</span> (对象创建规则)](#-span-id----tcr--the-create-rule--span----------)
-  * [<span id = "TGR">The Get Rule</span> (对象获取引用规则)](#-span-id----tgr--the-get-rule--span------------)
-  * [Instance Variables and Passing Parameters (实例变量和参数传递)](#instance-variables-and-passing-parameters------------)
-  * [Ownership Examples](#ownership-examples)
-- [Core Foundation Object Lifecycle Management](#core-foundation-object-lifecycle-management)
-  * [Retaining Object References](#retaining-object-references)
-  * [Releasing Object References](#releasing-object-references)
-  * [Copying Object References](#copying-object-references)
-  * [Determining an Object's Retain Count](#determining-an-object-s-retain-count)
-- [<span id = "CF">Copy Functions</span>](#-span-id----cf--copy-functions--span-)
-  * [Shallow Copy （浅拷贝）](#shallow-copy------)
-  * [Deep Copy (深拷贝)](#deep-copy------)
-- [Allocators](#allocators)
-- [备注](#--)
-- [源文档](#---)
+[TOC]
 
 # 介绍
 
