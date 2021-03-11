@@ -1,6 +1,6 @@
 # 目录
 
-* [介绍](#介绍)
+   * [介绍](#介绍)
    * [本文内容](#本文内容)
    * [<span id="user-content-OP">Ownership Policy </span>](#ownership-policy-)
       * [<span id="user-content-basic">基础内容 </span>](#基础内容-)
@@ -15,7 +15,7 @@
       * [Copying Object References](#copying-object-references)
       * [Determining an Object's Retain Count](#determining-an-objects-retain-count)
    * [<span id="user-content-CF">Copy Functions</span>](#copy-functions)
-      * [Shallow Copy （浅拷贝）](#shallow-copy-浅拷贝)
+      * [Shallow Copy (浅拷贝)](#shallow-copy-浅拷贝)
       * [Deep Copy (深拷贝)](#deep-copy-深拷贝)
    * [Allocators](#allocators)
    * [备注](#备注)
@@ -224,7 +224,7 @@ myString = (CFStringRef)CFRetain(myString);
 
 如果要复制对象，必须使用`Core Foundation`为此专门提供的函数之一。继续`CFString`示例，您将使用`CFStringCreateCopy`创建一个全新的`CFString`对象，该对象包含与原始对象相同的数据。具有" `CreateCopy` "函数的`Core Foundation`类型还提供了" `CreateMutableCopy` "函数，它返回一个可以修改的对象的副本。
 
-## Shallow Copy （浅拷贝）
+## Shallow Copy (浅拷贝)
 
 复制复合对象(如**可以包含其他对象的集合对象**)也必须小心。使用`=`操作符对这些对象执行复制会导致复制对象引用。**与CFString和CFData等简单对象相比，为CFArray和CFSet等复合对象提供的"CreateCopy"函数实际上执行的是浅拷贝**。**对于这些对象，浅拷贝意味着创建一个新的集合对象，但不复制原始集合的内容——只复制对象引用到新容器**。这种类型的复制是有用的，例如，你有一个不可变的数组，你想要重新排序它。在这种情况下，你不想复制所有包含的对象，因为不需要更改它们——为什么要使用额外的内存呢?你仅仅需要的是改变这个不可变的容器（这里指代为数组），这里的风险与复制具有简单类型的对象引用的风险相同（也就是开头描述的风险问题）。
 
