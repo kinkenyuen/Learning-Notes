@@ -68,7 +68,7 @@
 
 ## Naming Conventions(命名约定)
 
-有很多方法可以使用`Core Foundation`获得对对象的引用。根据`Core Foundation`所有权策略，你需要知道你否拥有函数返回的对象，以便你知道在内存管理方面应该采取什么操作。`Core Foundation`为其函数建立了一个命名约定，让你确定是否拥有函数返回的对象。简而言之，**如果函数名中包含单词"`Create`"或"`Copy`"，那么你就拥有该对象**。如果函数名包含单词"`Get`"，则不拥有该对象。这些规则在[The Create Rule](#TCR)和[<span id="user-content-TGR">The Get Rule</span> (对象获取引用规则)](#the-get-rule-对象获取引用规则)中有更详细的解释。
+有很多方法可以使用`Core Foundation`获得对对象的引用。根据`Core Foundation`所有权策略，你需要知道你否拥有函数返回的对象，以便你知道在内存管理方面应该采取什么操作。`Core Foundation`为其函数建立了一个命名约定，让你确定是否拥有函数返回的对象。简而言之，**如果函数名中包含单词"`Create`"或"`Copy`"，那么你就拥有该对象**。如果函数名包含单词"`Get`"，则不拥有该对象。这些规则在[The Create Rule(对象创建规则)](#the-create-rule对象创建规则)和[The Get Rule(对象获取引用规则)](#the-get-rule对象获取引用规则)中有更详细的解释。
 
 > 重要提示：Cocoa为内存管理定义了一套类似的命名约定(参见[Advanced Memory Management Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011i))。Core Foundation命名约定，特别是"create"一词的使用，只适用于返回Core Foundation对象的C函数。Objective-C方法的命名约定受Cocoa的约定控制，不管这个方法返回的是Core Foundation还是Cocoa对象。
 
@@ -89,7 +89,7 @@ CFDictionaryRef CFTimeZoneCopyAbbreviationDictionary (void);
 CFBundleRef     CFBundleCreate (CFAllocatorRef allocator, CFURLRef bundleURL);
 ```
 
-第一个函数的名称中包含单词"`Create`"，它创建了一个新的`CFTimeZone`对象。你拥有这个对象，你有责任放弃它的所有权。第二个函数在其名称中包含单词"`Copy`"，并创建一个`time zone` 对象属性的副本。(请注意，这与获取属性本身不同——参见[The Get Rule](#TGR)。) 同样，你拥有这个对象，你有责任放弃所有权。第三个函数`CFBundleCreate`在其名称中包含单词"`Create`"，但文档声明它可能返回一个现有的`CFBundle`。不过，不管是否实际创建了一个新对象，你都拥有这个对象。如果返回的是一个已存在的对象，那么它的引用计数将增加，因此你有责任放弃所有权。
+第一个函数的名称中包含单词"`Create`"，它创建了一个新的`CFTimeZone`对象。你拥有这个对象，你有责任放弃它的所有权。第二个函数在其名称中包含单词"`Copy`"，并创建一个`time zone` 对象属性的副本。(请注意，这与获取属性本身不同——参见[The Get Rule(对象获取引用规则)](#the-get-rule对象获取引用规则)) 同样，你拥有这个对象，你有责任放弃所有权。第三个函数`CFBundleCreate`在其名称中包含单词"`Create`"，但文档声明它可能返回一个现有的`CFBundle`。不过，不管是否实际创建了一个新对象，你都拥有这个对象。如果返回的是一个已存在的对象，那么它的引用计数将增加，因此你有责任放弃所有权。
 
 下一个示例可能看起来更复杂，但它仍然遵循相同的简单规则。
 
@@ -132,7 +132,7 @@ void SetTitle(CFStringRef newTitle) {
 
 上面的示例使用一个静态`CFStringRef`变量来保存`retained`的`CFString`对象。你可以使用其他方法来存储它，但是你必须将它放在接收函数以外的其他地方。这里先用一个临时局部变量保存当前`title`,再进行新值的`copy`和释放旧的(当前的)`title`。如果参数`newTitle`与当前`title`是同一对象，则做了一次复制和释放操作，平衡等效。
 
-请注意，在上面的示例中，对象是`copied`的，而不是简单地`retained`。(回想一下，从所有权的角度来看，它们是等价的——参见[基本内容](#basic)。)这样做的原因是，`title` property可能被认为是一个`attribute`。除了通过访问器方法，它不应该被其他方法更改。即使参数类型为`CFStringRef`，也可能传入对`CFMutableString`对象的引用，这将允许从外部更改值。因此，您可以复制对象，以便在您持有它时它不会被更改。你应该复制对象，当你需要自己持有一个不可变更的对象。如果对象被认为是一个持有关系，那么你应该`retain`它。
+请注意，在上面的示例中，对象是`copied`的，而不是简单地`retained`。(回想一下，从所有权的角度来看，它们是等价的——参见[基础内容](#基础内容))这样做的原因是，`title` property可能被认为是一个`attribute`。除了通过访问器方法，它不应该被其他方法更改。即使参数类型为`CFStringRef`，也可能传入对`CFMutableString`对象的引用，这将允许从外部更改值。因此，您可以复制对象，以便在您持有它时它不会被更改。你应该复制对象，当你需要自己持有一个不可变更的对象。如果对象被认为是一个持有关系，那么你应该`retain`它。
 
 对应的`get`函数，要简单得多:
 
@@ -205,7 +205,7 @@ myString = (CFStringRef)CFRetain(myString);
 
 ## Copying Object References
 
-复制对象时，新生成的对象的引用计数为1，而不管原始对象的引用计数是多少。有关复制对象的更多信息，请参见[Copy Functions](#CF)。
+复制对象时，新生成的对象的引用计数为1，而不管原始对象的引用计数是多少。有关复制对象的更多信息，请参见[Copy Functions](#copy-functions)。
 
 ## Determining an Object's Retain Count 
 
@@ -213,7 +213,7 @@ myString = (CFStringRef)CFRetain(myString);
 
 `CFIndex count = CFGetRetainCount(myString);`
 
-然而，请注意，通常不需要确定`Core Foundation`对象的引用计数，除非在调试中。如果你发现自己需要知道对象的保留计数，请检查是否正确地遵守了所有权策略规则(请参阅[Ownership Policy](#OP))。
+然而，请注意，通常不需要确定`Core Foundation`对象的引用计数，除非在调试中。如果你发现自己需要知道对象的保留计数，请检查是否正确地遵守了所有权策略规则(请参阅[Ownership Policy](#ownership-policy))。
 
 # Copy Functions
 
