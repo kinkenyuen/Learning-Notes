@@ -53,12 +53,11 @@
 
 * [Advanced Memory Management Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011i)
 
-# <span id = "OP">Ownership Policy </span>
+# Ownership Policy
 
 使用`Core Foundation`的应用程序不断地访问、创建和释放对象。为了确保不会泄漏内存，`Core Foundation`定义了获取和创建对象的规则。
 
-## <span id = "basic">基础内容 </span>
-
+## 基础内容
 当试图理解`Core Foundation` 应用程序中的内存管理时，不要从内存管理本身的角度考虑，而是从对象所有权的角度考虑，这是很有帮助的。一个对象可以有一个或多个所有者;它使用`retain count`记录所有者的数量。如果一个对象没有所有者(如果它的引用计数下降到零)，它将被释放。
 
 `Core Foundation`为对象所有权和对象销毁定义了以下规则：
@@ -67,13 +66,13 @@
 * 如果你从其他地方得到一个对象，你就不拥有它。如果你想防止它被销毁，你必须将自身成为对象的所有者(使用`CFRetain`)
 * 如果你是一个对象的所有者，你必须在使用完它之后放弃它的所有权（使用`CFRelease`）
 
-## Naming Conventions (命名约定)
+## Naming Conventions(命名约定)
 
 有很多方法可以使用`Core Foundation`获得对对象的引用。根据`Core Foundation`所有权策略，你需要知道你否拥有函数返回的对象，以便你知道在内存管理方面应该采取什么操作。`Core Foundation`为其函数建立了一个命名约定，让你确定是否拥有函数返回的对象。简而言之，**如果函数名中包含单词"`Create`"或"`Copy`"，那么你就拥有该对象**。如果函数名包含单词"`Get`"，则不拥有该对象。这些规则在[The Create Rule](#TCR)和[<span id="user-content-TGR">The Get Rule</span> (对象获取引用规则)](#the-get-rule-对象获取引用规则)中有更详细的解释。
 
 > 重要提示：Cocoa为内存管理定义了一套类似的命名约定(参见[Advanced Memory Management Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011i))。Core Foundation命名约定，特别是"create"一词的使用，只适用于返回Core Foundation对象的C函数。Objective-C方法的命名约定受Cocoa的约定控制，不管这个方法返回的是Core Foundation还是Cocoa对象。
 
-## <span id = "TCR">The Create Rule</span> (对象创建规则)
+## The Create Rule(对象创建规则)
 
 `Core Foundation` 的函数名称指示你什么时候拥有（持有）返回的对象:
 
@@ -102,7 +101,7 @@ CF_EXPORT CFMutableBagRef   CFBagCreateMutableCopy(CFAllocatorRef allocator, CFI
 
 `CFBag`函数`CFBagCreateMutableCopy`在其名称中包含了"`Create`"和"`Copy`"。它是一个创建函数，因为函数名包含单词"`Create`"。还要注意，第一个参数的类型是`CFAllocatorRef`——这是进一步的提示。这个函数中的"`Copy`"是一个提示，该函数接受一个`CFBagRef`参数并生成一个对象的副本。源集合的元素对象还会被复制到新创建的`bag`中。函数名的子串"`Copy`"和"`NoCopy`"指示如何处理源对象所拥有的对象——也就是说，它们是否被复制。
 
-## <span id = "TGR">The Get Rule</span> (对象获取引用规则)
+## The Get Rule(对象获取引用规则)
 
 如果你从"`Create`"或`Copy`函数以外的任何`Core Foundation`函数(例如`Get`函数)接收对象，则你不拥有该对象，也不能确定对象的生命周期。如果你想确保这样的对象在使用时不会被丢弃，则必须声明所有权(使用`CFRetain`函数)。然后，当你用完它后，你有责任放弃所有权。
 
@@ -216,7 +215,7 @@ myString = (CFStringRef)CFRetain(myString);
 
 然而，请注意，通常不需要确定`Core Foundation`对象的引用计数，除非在调试中。如果你发现自己需要知道对象的保留计数，请检查是否正确地遵守了所有权策略规则(请参阅[Ownership Policy](#OP))。
 
-# <span id = "CF">Copy Functions</span> 
+# Copy Functions
 
 通常，当使用`=`操作符将一个变量的值赋值给另一个变量时，会发生标准的复制操作，也可以称为简单赋值操作。例如，表达式`myInt2 = myInt1`将`myInt1`的整型内容从`myInt1`使用的内存复制到`myInt2`使用的内存中。复制操作之后，内存中的两个单独区域包含相同的值。但是，如果试图以这种方式复制`Core Foundation`对象，请注意，**你不会复制对象本身，而只复制对该对象的引用**。
 
@@ -224,11 +223,11 @@ myString = (CFStringRef)CFRetain(myString);
 
 如果要复制对象，必须使用`Core Foundation`为此专门提供的函数之一。继续`CFString`示例，您将使用`CFStringCreateCopy`创建一个全新的`CFString`对象，该对象包含与原始对象相同的数据。具有" `CreateCopy` "函数的`Core Foundation`类型还提供了" `CreateMutableCopy` "函数，它返回一个可以修改的对象的副本。
 
-## Shallow Copy (浅拷贝)
+## Shallow Copy(浅拷贝)
 
 复制复合对象(如**可以包含其他对象的集合对象**)也必须小心。使用`=`操作符对这些对象执行复制会导致复制对象引用。**与CFString和CFData等简单对象相比，为CFArray和CFSet等复合对象提供的"CreateCopy"函数实际上执行的是浅拷贝**。**对于这些对象，浅拷贝意味着创建一个新的集合对象，但不复制原始集合的内容——只复制对象引用到新容器**。这种类型的复制是有用的，例如，你有一个不可变的数组，你想要重新排序它。在这种情况下，你不想复制所有包含的对象，因为不需要更改它们——为什么要使用额外的内存呢?你仅仅需要的是改变这个不可变的容器（这里指代为数组），这里的风险与复制具有简单类型的对象引用的风险相同（也就是开头描述的风险问题）。
 
-## Deep Copy (深拷贝)
+## Deep Copy(深拷贝)
 
 当您想要创建一个全新的复合对象时，您必须执行深拷贝。深拷贝复制复合对象以及它包含的所有对象的内容。`Core Foundation`的当前版本包含一个函数`CFPropertyListCreateDeepCopy`，该函数执行属性列表的深度复制。如果要创建其他结构的全新副本，则可以通过递归遍历复合对象并将其一一复制添加到新副本。在实现此功能时要小心，因为复合对象可能是递归的——它们可能直接或间接包含对自身的引用——这可能导致递归循环。
 
