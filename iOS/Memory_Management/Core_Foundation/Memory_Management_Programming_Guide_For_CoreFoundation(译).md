@@ -1,3 +1,26 @@
+# 目录
+
+* [介绍](#介绍)
+   * [本文内容](#本文内容)
+   * [<span id="user-content-OP">Ownership Policy </span>](#ownership-policy-)
+      * [<span id="user-content-basic">基础内容 </span>](#基础内容-)
+      * [Naming Conventions (命名约定)](#naming-conventions-命名约定)
+      * [<span id="user-content-TCR">The Create Rule</span> (对象创建规则)](#the-create-rule-对象创建规则)
+      * [<span id="user-content-TGR">The Get Rule</span> (对象获取引用规则)](#the-get-rule-对象获取引用规则)
+      * [Instance Variables and Passing Parameters (实例变量和参数传递)](#instance-variables-and-passing-parameters-实例变量和参数传递)
+      * [Ownership Examples](#ownership-examples)
+   * [Core Foundation Object Lifecycle Management](#core-foundation-object-lifecycle-management)
+      * [Retaining Object References](#retaining-object-references)
+      * [Releasing Object References](#releasing-object-references)
+      * [Copying Object References](#copying-object-references)
+      * [Determining an Object's Retain Count](#determining-an-objects-retain-count)
+   * [<span id="user-content-CF">Copy Functions</span>](#copy-functions)
+      * [Shallow Copy （浅拷贝）](#shallow-copy-浅拷贝)
+      * [Deep Copy (深拷贝)](#deep-copy-深拷贝)
+   * [Allocators](#allocators)
+   * [备注](#备注)
+   * [源文档](#源文档)
+
 # 介绍
 
 `Core Foundation`内存管理使用`allocators`,引用计数机制和基于函数名约定的对象所有权策略。本文涵盖了对象创建、复制、`retaining`、`releasing`的相关技术。
