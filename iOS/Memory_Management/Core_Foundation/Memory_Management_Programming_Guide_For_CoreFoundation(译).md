@@ -1,5 +1,3 @@
-[TOC]
-
 # 介绍
 
 `Core Foundation`内存管理使用`allocators`,引用计数机制和基于函数名约定的对象所有权策略。本文涵盖了对象创建、复制、`retaining`、`releasing`的相关技术。
