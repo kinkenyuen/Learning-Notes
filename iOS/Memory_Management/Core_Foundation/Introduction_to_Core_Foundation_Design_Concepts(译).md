@@ -125,6 +125,65 @@ typedef struct __CFArray * CFMutableArrayRef;
 
 对可变对象的引用在类型名中包含" `mutable` "，例如，`CFMutableStringRef`。
 
+# Comparing Objects(对象比较)
+
+比较两个`Core Foundation`对象用`CFEqual`函数。如果两个对象本质上相等，函数返回一个布尔值`true`。本质上相等取决于被比较对象的类型。例如，当你比较两个`CFString`对象时，`Core Foundation`认为当它们逐个字符匹配时，它们本质上是相等的，而不管它们的编码或可变性属性是什么。当两个`CFArray`对象具有相同的元素个数，并且每个元素对象本质上相等，就认为它们相等。下面的代码片段展示了如何使用`CFEqual`函数来比较常量和传入的形参:
+
+```c
+void stringTest(CFStringRef myString) {
+    Boolean equal = CFEqual(myString, CFSTR("Kalamazoo"));
+    if (!equal) {
+        printf(“They’re not equal!");
+    }
+    else {
+        printf(“They’re equal!”):
+    }
+}
+```
+
+# Inspecting Objects
+
+`Core Foundation`对象的一个主要特征是它们基于不透明(或私有)类型;因此，很难直接检查对象的内部数据。然而，`Base Services`提供了两个用于检查`Core Foundation`对象的函数。这些函数返回对象和对象类型的描述。
+
+要找出`Core Foundation`对象的内容，在该对象上调用`CFCopyDescription`函数,然后在引用的字符串对象中打印出包含的字符序列:
+
+```c
+void describe255(CFTypeRef tested) {
+    char buffer[256];
+    CFIndex got;
+    CFStringRef description = CFCopyDescription(tested);
+    CFStringGetBytes(description,
+        CFRangeMake(0, CFStringGetLength(description)),
+        CFStringGetSystemEncoding(), '?', TRUE, buffer, 255, &got);
+    buffer[got] = (char)0;
+    fprintf(stdout, "%s", buffer);
+    CFRelease(description);
+}
+```
+
+这个例子只展示了打印描述的一种方法。除了`CFStringGetBytes`之外，您还可以使用`CFString`函数来获取实际的字符串。
+
+要确定“未知”对象的类型，请使用`CFGetTypeID`函数获取其类型ID，并将该值与已知类型ID进行比较，直到找到匹配的对象。你可以使用`CFGetTypeID`函数获得对象的类型ID。每种不透明类型还定义了一个`CFTypeGetTypeID`形式的函数(例如，`CFArrayGetTypeID`);这个函数返回该类型的类型ID。因此，你可以通过如下方式测试`CFType`对象是否是特定不透明类型的成员:
+
+```c
+CFTypeID type = CFGetTypeID(anObject);
+if (CFArrayGetTypeID() == type)
+    printf(“anObject is an array.”);
+else
+    printf(“anObject is NOT an array.”);
+```
+
+要在调试器中显示关于`Core Foundation`对象类型的信息，请使用`CFGetTypeID`函数获取其类型ID，然后将该值传递给`CFCopyTypeIDDescription`函数:
+
+```c
+/* aCFObject is any Core Foundation object */
+CFStringRef descrip = CFCopyTypeIDDescription(CFGetTypeID(aCFObject));
+```
+
+> 注意：String提供两个函数CFShow和CFShowStr，都在CFString.h中声明，你可以在支持的调试器中调用它来打印Core Foundation对象的描述
+
+> 重要提示:CFCopyDescription和CFCopyTypeIDDescription函数仅用于调试。由于描述中的信息及其格式可能会发生变化，所以不要在代码中创建对它们的依赖关系。
+
 # Naming Conventions(命名约定)
 
 `Core Foundation`中主要的编程接口约定是使用与符号关系最密切的不透明类型的名称作为符号的前缀。对于函数，这个前缀不仅标识函数"所属"的类型，而且通常标识函数操作的目标对象的类型。(这种约定的一个例外是常量，它将"`k`"放在类型前缀之前。)下面是头文件中的一些例子:
@@ -166,20 +225,29 @@ typedef enum {
 
   > By using CFIndex for variables that interact with Core Foundation arguments of the same type, you ensure a higher degree of source compatibility for your code.
 
-* 一些`Core Foundation`头文件似乎定义了不透明的类型，但实际上包含了与特定类型无关的便捷函数。一个恰当的例子是`CFPropertyList.h`。`CFPropertyList`是任何属性列表类型的占位符类型:`CFString`、`CFData`、`CFBoolean`、`CFNumber`、`CFDate`、`CFArray`和`CFDictionary`。
+* 一些`Core Foundation`头文件似乎定义了不透明的类型，但实际上包含了与特定类型无关的便捷函数。一个典型的例子是`CFPropertyList.h`，`CFPropertyList`是任何属性列表类型的占位符类型:`CFString`、`CFData`、`CFBoolean`、`CFNumber`、`CFDate`、`CFArray`和`CFDictionary`。
 
 * 除非另有说明，所有用于返回值的引用形参都可以接受NULL。这表明调用者对返回值不感兴趣。
 
-
 # Other Types
 
-# Comparing Objects
+`Core Foundation`定义了许多在函数中通用的数据类型。这些类型的目的是抽象可能必须随着处理器地址空间的变化而改变的原始值。例如，`CFIndex`类型用于`index`、`count`、`length`和`size`参数。`CFOptionFlags`类型用于bitfield参数，`CFHashCode`类型保存从`CFHash`函数和某些散列回调返回的散列结果。
 
-# Inspecting Objects
+其他基类型用于接受和返回比较值和范围值的函数中。
+
+> CFRange is a structure that specifies any part of a linear sequence of items, from characters in a string to elements in a collection.
+
+对于比较函数，CFComparisonResult类型定义了枚举常量来表示适当的返回值(等于、小于、大于)。一些`Core Foundation`函数采取回调比较器函数;如果需要自定义比较器，该函数必须符合`CFComparatorFunction`类型指定的签名。
+
+> 重要提示:某些Core Foundation类型(特别是CFIndex和CFTypeID)的整数值会随着处理器地址大小的增长而增长。通过将基类型用于与相同类型的Core Foundation参数交互的变量，可以确保代码的源兼容性更高。
 
 # Toll-Free Bridged Types
 
 ## Casting and Object Lifetime Semantics
 
 ## Toll-Free Bridged Types
+
+# 源文档
+
+[Introduction to Core Foundation Design Concepts](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFDesignConcepts/CFDesignConcepts.html#//apple_ref/doc/uid/10000122-SW1)
 
