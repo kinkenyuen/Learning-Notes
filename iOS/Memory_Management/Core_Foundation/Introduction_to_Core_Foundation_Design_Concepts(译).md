@@ -64,13 +64,112 @@
 
 最后，你可以在某种程度上自定义一些不透明类型。例如，集合类型允许你为集合中的元素添加回调。
 
-# Object References
+# Object References(对象引用)
 
-# Polymorphic Functions
+您可以通过`references`引用`Core Foundation`对象(不透明类型)。在每个不透明类型的头文件中，你会注意到一到两行类似下面的代码:
 
-# Varieties of Objects
+```objective-c
+typedef const struct __CFArray * CFArrayRef;
+typedef struct __CFArray * CFMutableArrayRef;
+```
 
-# Naming Conventions
+这样的声明是指向定义不透明类型的(私有)结构的不可变和可变版本的指针引用。许多`Core Foundation`函数的参数和返回值采用这些对象引用的类型，而不是私有结构的类型定义。例如:
+
+`CFStringRef CFStringCreateByCombiningStrings(CFAllocatorRef alloc, CFArrayRef array, CFStringRef separatorString);`
+
+有关不可变、可变和其他不透明类型对象的变体的更多信息，参见 [Varieties of Objects]() 
+
+每个`Core Foundation` `opaque`类型都为它的对象定义了一个唯一的类型ID，就像上面`CFArrayRef`中的`CFArray`对象一样。类型ID是类型`CFTypeID`的整数，它标识`Core Foundation`对象"所属"的不透明类型。您可以在各种上下文中使用类型ID，例如在异类集合上进行操作时。`Core Foundation`提供了获取和计算类型ID的编程接口。
+
+> Important: Because the value for a type ID can change from release to release, your code should not rely on stored or hard-coded type IDs nor should it hard-code any observed properties of a type ID (such as, for example, it being a small integer)
+
+此外，`Core Foundation`定义了一个通用的对象引用类型`CFTypeRef`，类似于一些面向对象编程语言中的根类。这个泛型引用作为多态函数的参数和返回值的占位符类型，它可以接受对任何`Core Foundation`对象的引用(**相当于Cocoa里的id类型**)。有关这个主题的更多信息，参见[Polymorphic Functions]()。当使用对象引用时，有关内存管理的问题，参见 [Memory Management Programming Guide for Core Foundation](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/CFMemoryMgmt.html#//apple_ref/doc/uid/10000127i)。
+
+# Polymorphic Functions(多态函数)
+
+`Core Foundation`提供了几个多态函数。这些函数可以接受任何`Core Foundation`对象作为参数，并且(在一个实例中，`CFRetain`)可以返回任何`Core Foundation`对象。这些参数和返回值的类型为`CFTypeRef`，这是一种泛型对象引用类型。`CFType`类似于面向对象语言中的根类，因为它的函数可以被所有其他对象重用。
+
+多态函数用于所有`Core Foundation`对象的通用操作:
+
+* Reference counting(引用计数)
+
+  `CFType`提供了几个多态函数来操作和获取对象的引用计数。有关这些函数的更多信息，参见 [Memory Management Programming Guide for Core Foundation](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/CFMemoryMgmt.html#//apple_ref/doc/uid/10000127i)。
+
+* Comparing objects(对象比较)
+
+  `CFEqual`函数比较任意两个`Core Foundation`对象(参见[Comparing Objects]())。相等的基础取决于被比较对象的类型。例如，如果两者都是`CFString`对象,则逐个字符进行比较。
+
+* Hashing objects(对象哈希)
+
+  `CFHash`函数返回一个标识`Core Foundation`对象的惟一哈希码(参见[Comparing Objects]())。可以将哈希码用作哈希表结构中的表地址。如果两个对象相等(由`CFEqual`函数决定)，它们具有相同的哈希码。
+
+* Inspecting objects
+
+  `CFType`提供了检查对象的方法，从而了解它们的内容和它们"所属"的类型。`CFCopyDescription`函数返回一个描述对象的字符串(更准确地说，是对`CFString`对象的引用)。`CFCopyTypeIDDescription`函数接受一个`CFTypeID`而不是`CFTypeRef`参数，它返回一个描述由类型ID标识的不透明类型的字符串引用。这些功能主要是为了辅助调试;有关这些函数的更多信息，参见[Inspecting Objects]()。
+
+您还可以通过使用`CFGetTypeID`函数获取泛型类型对象的类型ID，然后将该值与已知类型ID进行比较，从而确定泛型类型对象所属的不透明类型。有关此任务的更多信息，参见[Inspecting Objects]()。
+
+# Varieties of Objects(对象变体或类型)
+
+不透明类型根据其对象中预期的可编辑性和可扩展性的特性，最多分为三个基本变体：
+
+- immutable and fixed size
+- mutable and fixed size
+- mutable and variable size
+
+可变对象是可编辑的，这意味着它们的内容可以更改。不可变对象是不可编辑的;一旦它们被创建，它们就不能被更改。任何更改不可变对象的尝试通常都会导致某种类型的错误。一个固定大小的对象有它可以增长到的最大限制;对于`CFString`，这将是字符的数量，对于集合，就是元素的数量。
+
+一些不透明类型，如`CFString`和`CFArray`，可以创建所有三种类型的对象。大多数不透明类型都可以创建不可变的、大小固定的对象，并且通常至少有一个未限定的创建函数来完成这项工作(例如`CFArrayCreate`)。
+
+> The determinant for mutable fixed-size versus variable-size is the value of the capacity or maximum-length parameter in the Type CreateMutable function; any positive value results in a fixed-size object, but a 0 specifies a variable-size object.
+
+对可变对象的引用在类型名中包含" `mutable` "，例如，`CFMutableStringRef`。
+
+# Naming Conventions(命名约定)
+
+`Core Foundation`中主要的编程接口约定是使用与符号关系最密切的不透明类型的名称作为符号的前缀。对于函数，这个前缀不仅标识函数"所属"的类型，而且通常标识函数操作的目标对象的类型。(这种约定的一个例外是常量，它将"`k`"放在类型前缀之前。)下面是头文件中的一些例子:
+
+```c
+/* from CFDictionary.h */
+CF_EXPORT CFIndex CFDictionaryGetCountOfKey(CFDictionaryRef dict, const void *key);
+/* from CFString.h */
+typedef UInt32 CFStringEncoding;
+/* from CFCharacterSet.h */
+typedef enum {
+    kCFCharacterSetControl = 1,
+    kCFCharacterSetWhitespace,
+    kCFCharacterSetWhitespaceAndNewline,
+    kCFCharacterSetDecimalDigit,
+    kCFCharacterSetLetter,
+    kCFCharacterSetLowercaseLetter,
+    kCFCharacterSetUppercaseLetter,
+    kCFCharacterSetNonBase,
+    kCFCharacterSetDecomposable,
+    kCFCharacterSetAlphaNumeric,
+    kCFCharacterSetPunctuation,
+    kCFCharacterSetIllegal
+} CFCharacterSetPredefinedSet;
+```
+
+`Core Foundation`除了与不透明类型和内存管理相关的约定之外，还有一些编程接口约定。
+
+* `Get`、`Copy`和`Create`之间有一个重要的区别，就是返回值的所有权。如果使用`Get`函数，则不能确定返回对象的生命周期。为了确保这样一个对象的持久性，您可以`retain`它(使用`CFRetain`函数)，或者在某些情况下复制它。如果使用`Copy`或`Create`函数，则需要负责释放对象(使用CFRelease函数)。要了解更多细节，请参见[Memory Management Programming Guide for Core Foundation](https://developer.apple.com/library/archive/documentation/CoreFoundation/Conceptual/CFMemoryMgmt/CFMemoryMgmt.html#//apple_ref/doc/uid/10000127i)。
+
+* 一些`Core Foundation`对象有它们自己的命名约定，以使通用操作保持一致性。例如，集合在函数名中嵌入下列动词，表示对集合元素的特定操作:
+
+  * "add"的意思是"如果没有就添加，有就啥也不做"(如果这个集合的元素是唯一性的)
+  * "Replace"的意思是"存在即替换，没有该元素就忽略"
+  * "Set"的意思是"没有则添加，有则替换"
+  * "Remove"的意思是"存在即移除，没有该元素就忽略"
+
+* `CFIndex`类型用于索引、计数、长度和大小参数和返回值。这种类型表示的整数值(目前为32位)(现在已经是64位)可以随着处理器地址大小的增长而增长。在指针大小不同的体系结构中，比如64位，`CFIndex`可以声明为64位，这与`int`的大小无关。
+
+  > By using CFIndex for variables that interact with Core Foundation arguments of the same type, you ensure a higher degree of source compatibility for your code.
+
+* 一些`Core Foundation`头文件似乎定义了不透明的类型，但实际上包含了与特定类型无关的便捷函数。一个恰当的例子是`CFPropertyList.h`。`CFPropertyList`是任何属性列表类型的占位符类型:`CFString`、`CFData`、`CFBoolean`、`CFNumber`、`CFDate`、`CFArray`和`CFDictionary`。
+
+* 除非另有说明，所有用于返回值的引用形参都可以接受NULL。这表明调用者对返回值不感兴趣。
+
 
 # Other Types
 
