@@ -241,9 +241,106 @@ typedef enum {
 
 > 重要提示:某些Core Foundation类型(特别是CFIndex和CFTypeID)的整数值会随着处理器地址大小的增长而增长。通过将基类型用于与相同类型的Core Foundation参数交互的变量，可以确保代码的源兼容性更高。
 
-# Toll-Free Bridged Types
+# Toll-Free Bridged Types(相互桥接的类型)
 
-## Casting and Object Lifetime Semantics
+在`Core Foundation`框架和`Foundation`框架中有许多数据类型可以互换使用。可以互换使用的数据类型也称为`toll-free bridged`数据类型。这意味着你可以使用相同的数据结构作为`Core Foundation`函数调用的参数，或者作为`Objective-C`消息调用的接收者或参数。例如，`NSLocale`与其`Core Foundation`对等的`CFLocale`是可互换的。
+
+并非所有的数据类型都是`toll-free bridged`的，即使它们的名称表明它们是`toll-free bridged`的。例如，`NSRunLoop`桥接到`CFRunLoop`不是`toll-free`的，`NSBundle`桥接到`CFBundle`不是`toll-free`的，`NSDateFormatter`桥接到`CFDateFormatter`不是`toll-free`的。表1列出了支持`toll-free bridged`的数据类型。
+
+> 注意:如果你在你正在使用的Core Foundation集合上配置了一个自定义回调，包括一个空回调，那么当从Objective-C访问它时，它的内存管理行为是未定义的。
+
+## Casting and Object Lifetime Semantics(转换和对象生命周期语义)
+
+通过`toll-free`桥接，在一个你看到`NSLocale *`参数的方法中，你可以传递一个`CFLocaleRef`，而在一个你看到`CFLocaleRef`参数的函数中，你可以传递一个`NSLocale`实例。你还必须为编译器提供其他信息:**首先，您必须将一种类型转换为另一种类型;此外，你还必须指示对象生存期语义**。
+
+编译器理解返回`Core Foundation`类型的`Objective-C`方法，并遵循`Cocoa`命名约定(参见 [Advanced Memory Management Programming Guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html#//apple_ref/doc/uid/10000011i))。例如，编译器知道，在iOS中，`UIColor`的`CGColor`方法返回的`CGColor`是不拥有(非持有)的。你仍然必须使用适当的类型转换，如本例所示:
+
+```objective-c
+NSMutableArray *colors = [NSMutableArray arrayWithObject:(id)[[UIColor darkGrayColor] CGColor]];
+[colors addObject:(id)[[UIColor lightGrayColor] CGColor]];
+```
+
+**编译器不会自动管理Core Foundation对象的生存期**。你可以通过转换(定义在**objc/runtime.h**中)或者**Core foundation**风格的宏(定义在**NSObject.h**中)来告诉编译器对象的所有权语义:
+
+* `__bridge`在`Objective-C`和`Core Foundation`之间转换指针，但不转移所有权
+
+* `__bridge_retained`或`CFBridgingRetain`将一个`Objective-C`指针强制转换为`Core Foundation`指针，同时也将所有权转移给你。
+
+  你要在合适时机调用`CFRelease`或一个相关的函数来放弃对象的所有权。
+
+* `__bridge_transfer`或`CFBridgingRelease`将一个非`Objective-C`指针转换到`Objective-C`，同时也将所有权转移到`ARC`。
+  `ARC`负责放弃对象的所有权。
+
+下面是一些例子:
+
+```c
+NSLocale *gbNSLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_GB"];
+CFLocaleRef gbCFLocale = (__bridge CFLocaleRef)gbNSLocale;
+CFStringRef cfIdentifier = CFLocaleGetIdentifier(gbCFLocale);
+NSLog(@"cfIdentifier: %@", (__bridge NSString *)cfIdentifier);
+// Logs: "cfIdentifier: en_GB"
+ 
+CFLocaleRef myCFLocale = CFLocaleCopyCurrent();
+NSLocale *myNSLocale = (NSLocale *)CFBridgingRelease(myCFLocale);
+NSString *nsIdentifier = [myNSLocale localeIdentifier];
+CFShow((CFStringRef)[@"nsIdentifier: " stringByAppendingString:nsIdentifier]);
+// Logs identifier for current locale
+```
+
+下一个示例展示了`Core Foundation`内存管理函数的使用，这些函数由`Core Foundation`内存管理规则指定:
+
+```c
+- (void)drawRect:(CGRect)rect {
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    CGFloat locations[2] = {0.0, 1.0};
+    NSMutableArray *colors = [NSMutableArray arrayWithObject:(id)[[UIColor darkGrayColor] CGColor]];
+    [colors addObject:(id)[[UIColor lightGrayColor] CGColor]];
+    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colors, locations);
+    CGColorSpaceRelease(colorSpace);  // Release owned Core Foundation object.
+ 
+    CGPoint startPoint = CGPointMake(0.0, 0.0);
+    CGPoint endPoint = CGPointMake(CGRectGetMaxX(self.bounds), CGRectGetMaxY(self.bounds));
+    CGContextDrawLinearGradient(ctx, gradient, startPoint, endPoint,
+                                kCGGradientDrawsBeforeStartLocation | kCGGradientDrawsAfterEndLocation);
+    CGGradientRelease(gradient);  // Release owned Core Foundation object.
+}
+```
+
+表1提供了`Core Foundation`和`Foundation`之间可互换的数据类型列表。对于每一对，该表还列出了OS X的版本，在该版本中它们之间可以使用` toll-free bridging`。
+
+表1可以在`Core Foundation`和`Foundation`之间互换使用的数据类型
+
+| **Core Foundation typ**                                      | **Foundation class**                                         | **Availability** |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------- |
+| [CFArrayRef](https://developer.apple.com/documentation/corefoundation/cfarray) | [NSArray](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSArrayClassCluster/Description.html#//apple_ref/occ/cl/NSArray) | OS X 10.0        |
+| [CFAttributedStringRef](https://developer.apple.com/documentation/corefoundation/cfattributedstringref) | [NSAttributedString](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSAttributedStrngClstr/Description.html#//apple_ref/occ/cl/NSAttributedString) | OS X 10.4        |
+| [CFBooleanRef](https://developer.apple.com/documentation/corefoundation/cfbooleanref) | [NSNumber](https://developer.apple.com/documentation/foundation/nsnumber) | OS X 10.0        |
+| [CFCalendarRef](https://developer.apple.com/documentation/corefoundation/cfcalendarref) | [NSCalendar](https://developer.apple.com/documentation/foundation/nscalendar) | OS X 10.4        |
+| [CFCharacterSetRef](https://developer.apple.com/documentation/corefoundation/cfcharactersetref) | [NSCharacterSet](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSCharacterSetClstr/Description.html#//apple_ref/occ/cl/NSCharacterSet) | OS X 10.0        |
+| [CFDataRef](https://developer.apple.com/documentation/corefoundation/cfdata) | [NSData](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSDataClassCluster/Description.html#//apple_ref/occ/cl/NSData) | OS X 10.0        |
+| [CFDateRef](https://developer.apple.com/documentation/corefoundation/cfdateref) | [NSDate](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSDateClassCluster/Description.html#//apple_ref/occ/cl/NSDate) | OS X 10.0        |
+| [CFDictionaryRef](https://developer.apple.com/documentation/corefoundation/cfdictionaryref) | [NSDictionary](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSDictionaryClassClstr/Description.html#//apple_ref/occ/cl/NSDictionary) | OS X 10.0        |
+| [CFErrorRef](https://developer.apple.com/documentation/corefoundation/cferror) | [NSError](https://developer.apple.com/documentation/foundation/nserror) | OS X 10.5        |
+| [CFLocaleRef](https://developer.apple.com/documentation/corefoundation/cflocale) | [NSLocale](https://developer.apple.com/documentation/foundation/nslocale) | OS X 10.4        |
+| [CFMutableArrayRef](https://developer.apple.com/documentation/corefoundation/cfmutablearray) | [NSMutableArray](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSArrayClassCluster/Description.html#//apple_ref/occ/cl/NSMutableArray) | OS X 10.0        |
+| [CFMutableAttributedStringRef](https://developer.apple.com/documentation/corefoundation/cfmutableattributedstring) | [NSMutableAttributedString](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSAttributedStrngClstr/Description.html#//apple_ref/occ/cl/NSMutableAttributedString) | OS X 10.4        |
+| [CFMutableCharacterSetRef](https://developer.apple.com/documentation/corefoundation/cfmutablecharacterset) | [NSMutableCharacterSet](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSCharacterSetClstr/Description.html#//apple_ref/occ/cl/NSMutableCharacterSet) | OS X 10.0        |
+| [CFMutableDataRef](https://developer.apple.com/documentation/corefoundation/cfmutabledataref) | [NSMutableData](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSDataClassCluster/Description.html#//apple_ref/occ/cl/NSMutableData) | OS X 10.0        |
+| [CFMutableDictionaryRef](https://developer.apple.com/documentation/corefoundation/cfmutabledictionaryref) | [NSMutableDictionary](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSDictionaryClassClstr/Description.html#//apple_ref/occ/cl/NSMutableDictionary) | OS X 10.0        |
+| [CFMutableSetRef](https://developer.apple.com/documentation/corefoundation/cfmutableset) | [NSMutableSet](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSSetClassCluster/Description.html#//apple_ref/occ/cl/NSMutableSet) | OS X 10.0        |
+| [CFMutableStringRef](https://developer.apple.com/documentation/corefoundation/cfmutablestringref) | [NSMutableString](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSStringClassCluster/Description.html#//apple_ref/occ/cl/NSMutableString) | OS X 10.0        |
+| [CFNullRef](https://developer.apple.com/documentation/corefoundation/cfnullref) | [NSNull](https://developer.apple.com/documentation/foundation/nsnull) | OS X 10.2        |
+| [CFNumberRef](https://developer.apple.com/documentation/corefoundation/cfnumberref) | [NSNumber](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSNumber/Description.html#//apple_ref/occ/cl/NSNumber) | OS X 10.0        |
+| [CFReadStreamRef](https://developer.apple.com/documentation/corefoundation/cfreadstream) | [NSInputStream](https://developer.apple.com/documentation/foundation/inputstream) | OS X 10.0        |
+| [CFRunLoopTimerRef](https://developer.apple.com/documentation/corefoundation/cfrunlooptimerref) | [NSTimer](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSTimer/Description.html#//apple_ref/occ/cl/NSTimer) | OS X 10.0        |
+| [CFSetRef](https://developer.apple.com/documentation/corefoundation/cfset) | [NSSet](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSSetClassCluster/Description.html#//apple_ref/occ/cl/NSSet) | OS X 10.0        |
+| [CFStringRef](https://developer.apple.com/documentation/corefoundation/cfstringref) | [NSString](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSStringClassCluster/Description.html#//apple_ref/occ/cl/NSString) | OS X 10.0        |
+| [CFTimeZoneRef](https://developer.apple.com/documentation/corefoundation/cftimezone) | [NSTimeZone](https://developer.apple.com/library/archive/documentation/LegacyTechnologies/WebObjects/WebObjects_3.5/Reference/Frameworks/ObjC/Foundation/Classes/NSTimeZoneClassCluster/Description.html#//apple_ref/occ/cl/NSTimeZone) | OS X 10.0        |
+| [CFURLRef](https://developer.apple.com/documentation/corefoundation/cfurl) | [NSURL](https://developer.apple.com/documentation/foundation/nsurl) | OS X 10.0        |
+| [CFWriteStreamRef](https://developer.apple.com/documentation/corefoundation/cfwritestreamref) | [NSOutputStream](https://developer.apple.com/documentation/foundation/nsoutputstream) | OS X 10.0        |
+
+
 
 ## Toll-Free Bridged Types
 
