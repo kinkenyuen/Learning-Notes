@@ -17,6 +17,8 @@
 
 * [Memory Management Programming Guide For CoreFoundation(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP)
 
+* [Introduction to Core Foundation Design Concepts(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP)
+
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
 * [Thread Management (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/线程管理.md) 介绍OS X的线程技术以及如何使用它们
