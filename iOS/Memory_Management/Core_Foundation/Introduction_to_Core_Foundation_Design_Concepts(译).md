@@ -306,6 +306,7 @@ CFShow((CFStringRef)[@"nsIdentifier: " stringByAppendingString:nsIdentifier]);
     CGGradientRelease(gradient);  // Release owned Core Foundation object.
 }
 ```
+## Toll-Free Bridged Types
 
 表1提供了`Core Foundation`和`Foundation`之间可互换的数据类型列表。对于每一对，该表还列出了OS X的版本，在该版本中它们之间可以使用` toll-free bridging`。
 
@@ -340,9 +341,6 @@ CFShow((CFStringRef)[@"nsIdentifier: " stringByAppendingString:nsIdentifier]);
 | [CFURLRef](https://developer.apple.com/documentation/corefoundation/cfurl) | [NSURL](https://developer.apple.com/documentation/foundation/nsurl) | OS X 10.0        |
 | [CFWriteStreamRef](https://developer.apple.com/documentation/corefoundation/cfwritestreamref) | [NSOutputStream](https://developer.apple.com/documentation/foundation/nsoutputstream) | OS X 10.0        |
 
-
-
-## Toll-Free Bridged Types
 
 # 源文档
 
