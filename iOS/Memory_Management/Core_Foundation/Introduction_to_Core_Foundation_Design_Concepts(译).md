@@ -1,3 +1,21 @@
+# 目录
+
+   * [Introduction to Core Foundation Design Concepts](#introduction-to-core-foundation-design-concepts)
+      * [文档内容](#文档内容)
+   * [Opaque Types(不透明类型)](#opaque-types不透明类型)
+      * [Advantages of Opaque Types(不透明类型的优点)](#advantages-of-opaque-types不透明类型的优点)
+   * [Object References(对象引用)](#object-references对象引用)
+   * [Polymorphic Functions(多态函数)](#polymorphic-functions多态函数)
+   * [Varieties of Objects(对象变体或类型)](#varieties-of-objects对象变体或类型)
+   * [Comparing Objects(对象比较)](#comparing-objects对象比较)
+   * [Inspecting Objects](#inspecting-objects)
+   * [Naming Conventions(命名约定)](#naming-conventions命名约定)
+   * [Other Types](#other-types)
+   * [Toll-Free Bridged Types(相互桥接的类型)](#toll-free-bridged-types相互桥接的类型)
+      * [Casting and Object Lifetime Semantics(转换和对象生命周期语义)](#casting-and-object-lifetime-semantics转换和对象生命周期语义)
+      * [Toll-Free Bridged Types](#toll-free-bridged-types)
+   * [源文档](#源文档)
+
 #  Introduction to Core Foundation Design Concepts
 
 `Core Foundation`是C语言实现的编程接口库，这些接口从概念上源自基于`Objective-C`的`Foundation`框架。`Core Foundation`在C语言中实现了一个有限的对象模型。`Core Foundation`定义了封装数据和函数的`opaque types` ，以下称为"对象"。
