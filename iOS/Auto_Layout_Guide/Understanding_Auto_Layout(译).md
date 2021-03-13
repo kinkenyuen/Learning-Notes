@@ -47,7 +47,10 @@
 
 传统的做法是，应用程序通过编程方式为视图层次结构中的每个视图设置`frame`来布局用户界面。这个`frame`在父视图的坐标系中定义了**视图的原点、高度和宽度**。
 
-<img src="./imgs/layout_views_2x.png" width="40%" height="40%" align="center">
+<div  align="center">    
+<img src="./imgs/layout_views_2x.png" width="40%" height="40%">
+</div>
+
 
 为了布局你的用户界面，你必须计算视图层次结构中每个视图的大小和位置。然后，如果发生了变化，你必须为所有受影响的视图重新计算`frame`。
 
