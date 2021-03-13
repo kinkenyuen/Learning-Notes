@@ -1,9 +1,37 @@
 # C/C++
 * [位域](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
-# iOS基础
+# iOS
+
+## Auto Layout Guide
+
+* [Understanding Auto Layout(译)]()
+
+* [Auto Layout Without Constraints(译)]()
+
+* [Anatomy of a Constraint(译)]()
+
+* [Working with Constraints in Interface Builder(译)]()
+
+---
+
+* [Stack Views(译)]()
+
+* [Simple Constraints(译)]()
+
+* [Views with Intrinsic Content Size(译)]()
+
+---
+
+* [Debugging Auto Layout(译)]()
+
+* [Advanced Auto Layout(译)]()
+
+* [Visual Format Language(译)]()
 
 ## 内存管理
+
+---
 
 * [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md)
 
@@ -13,11 +41,17 @@
 
 * [Using Autorelease Pool Blocks(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Using_Autorelease_Pool_Blocks(译).md)
 
+---
+
 * [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
+
+---
 
 * [Memory Management Programming Guide For CoreFoundation(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP)
 
 * [Introduction to Core Foundation Design Concepts(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Introduction_to_Core_Foundation_Design_Concepts(译).md)
+
+---
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
