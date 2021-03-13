@@ -47,7 +47,7 @@
 
 传统的做法是，应用程序通过编程方式为视图层次结构中的每个视图设置`frame`来布局用户界面。这个`frame`在父视图的坐标系中定义了**视图的原点、高度和宽度**。
 
-<div  align="center">    
+<div align="center">    
 <img src="./imgs/layout_views_2x.png" width="40%" height="40%">
 </div>
 
@@ -64,7 +64,9 @@
 
 自动布局使用一系列的约束来定义你的用户界面。约束通常表示两个视图之间的关系。然后自动布局根据这些约束计算每个视图的大小和位置。这会生成动态响应内部和外部变化的布局。
 
-<img src="./imgs/layout_constraints_2x.png" width="40%" height="40%" align="center">
+<div align="center">    
+<img src="./imgs/layout_constraints_2x.png" width="40%" height="40%">
+</div>
 
 设计一组约束来创建特定行为的逻辑，与编写面向过程或面向对象的代码非常不同。幸运的是，掌握自动布局和掌握其他编程任务并没有什么不同。有两个基本步骤:**首先你需要理解基于约束的布局背后的逻辑，然后你需要学习相关的API**。在学习其他编程任务时，你已经执行过这些步骤。自动布局也不例外。
 
