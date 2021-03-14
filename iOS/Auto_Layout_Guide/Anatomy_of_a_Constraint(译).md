@@ -1,3 +1,14 @@
+# 目录
+   * [Anatomy of a Constraint(剖析约束)](#anatomy-of-a-constraint剖析约束)
+      * [Auto Layout Attributes(自动布局属性)](#auto-layout-attributes自动布局属性)
+      * [Sample Equations(方程示例)](#sample-equations方程示例)
+      * [Creating Nonambiguous, Satisfiable Layouts(创建明确的、可满足的布局)](#creating-nonambiguous-satisfiable-layouts创建明确的可满足的布局)
+      * [Constraint Inequalities(约束不等式)](#constraint-inequalities约束不等式)
+      * [Constraint Priorities(约束优先级)](#constraint-priorities约束优先级)
+      * [Intrinsic Content Size(内部内容尺寸)](#intrinsic-content-size内部内容尺寸)
+         * [Intrinsic Content Size Versus Fitting Size](#intrinsic-content-size-versus-fitting-size)
+      * [Interpreting Values](#interpreting-values)
+   * [源文档](#源文档)
 # Anatomy of a Constraint(剖析约束)
 
 视图层次结构的布局被定义为一系列**线性方程**。每个约束都代表一个方程。你的目标是声明一系列有且只有一个可能解的方程。
@@ -300,11 +311,14 @@ View.width <= 0.0 * NotAnAttribute + IntrinsicWidth
 
 自动布局中的值总是以`points`为单位。然而，这些度量的确切含义可能会根据所涉及的属性和视图的布局方向而变化。
 
-| Auto Layout Attributes                                       | Value    | Notes                                                        |
-| ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
-| ![image: ../Art/ALGuide_Height.pdf](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/ALGuide_Height_2x.png)Height<br>![image: ../Art/ALGuide_Width.pdf](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/ALGuide_Width_2x.png)Width | 视图尺寸 | 这些属性可以被赋值为常量，也可以与其他高度和宽度属性组合使用。这些值不能为负。 |
-|                                                              |          |                                                              |
-|                                                              |          |                                                              |
-|                                                              |          |                                                              |
-|                                                              |          |                                                              |
+| Auto Layout Attributes    | Value                                                        | Notes                                                        |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Height<br>Width           | 视图尺寸                                                     | 这些属性可以被赋值为常量，也可以与其他高度和宽度属性组合使用。这些值不能为负。 |
+| Top<br>Bottom<br>Baseline | 当你往下移动屏幕时，数值会增加。                             | 这些属性只能与`Center Y`、`Top`、`Bottom`和`Baseline`属性组合在一起。 |
+| Leading<br>Trailing       | 当你向`trailing`移动时，这些值会增加。对于从左到右的布局方向，值随着向右移动而增加。对于从右到左的布局方向，值会随着向左移动而增加。 | 这些属性只能与`Leading`、`Trailing`或`Center X`属性组合在一起。 |
+| Left<br>Right             | 当你向右移动时，数值会增加。                                 | 这些属性只能与`Left`、`Right`和`Center X`属性组合在一起。避免使用`Left`、`Right`属性。使用`Leading`和`Trailing`代替。这允许布局适应视图的阅读方向。默认情况下，阅读方向是根据用户设置的当前语言来确定的。但是，你可以在必要的时候重写它。在iOS上，在持有约束的视图(受约束影响的所有视图最近的共同祖先)上设置`semanticContentAttribute`属性，以确定在从左到右和从右到左切换语言时，内容的布局是否被翻转。 |
+| Center X<br>Center Y      | The interpretation is based on the other attribute in the equation. | `Center X`可以与`Center X`、`Leading`、`Trailing`、`Right`、`Left`属性组合。<br/>Center Y可以与`Center Y`、`Top`、`Bottom`和`Baseline`属性组合。 |
 
+# 源文档
+
+[Anatomy of a Constraint](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/AnatomyofaConstraint.html#//apple_ref/doc/uid/TP40010853-CH9-SW1)
