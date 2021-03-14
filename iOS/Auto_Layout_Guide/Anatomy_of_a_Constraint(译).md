@@ -25,8 +25,9 @@
 在自动布局中，属性定义了一个可以被约束的特性。一般来说，这包括四边(`edge`)(前面(`leading`)、后面(`trailing`)、顶部(`top`)和底部(`bottom`))，以及高度(`height`)、宽度(`width`)和垂直(`vertical`)和水平(`horizontal`)中心。文本`items`也有一个或多个`baseline`属性。
 
 <div align="center">    
-<img src="./imgs/attributes_2x.png" width="100%" height="100%">
+<img src="./imgs/attributes_2x.png" width="60%" height="60%">
 </div>
+
 
 
 有关属性的完整列表，请参阅`NSLayoutAttribute`枚举。
@@ -109,18 +110,20 @@ View.height = 2.0 * View.width + 0.0
 下面的插图显示了纵向和横向的视图:
 
 <div align="center">    
-<img src="./imgs/Blocks_Portrait_2x.png" width="100%" height="100%">
+<img src="./imgs/Blocks_Portrait_2x.png" width="30%" height="30%">
 </div>
 
 <div align="center">    
-<img src="./imgs/Blocks_Landscape_2x.png" width="100%" height="100%">
+<img src="./imgs/Blocks_Landscape_2x.png" width="30%" height="30%">
 </div>
+
 
 那么这些约束应该是什么样的呢?下面的插图展示了一个简单的解决方案:
 
 <div align="center">    
-<img src="./imgs/two_view_example_1_2x.png" width="100%" height="100%">
+<img src="./imgs/two_view_example_1_2x.png" width="30%" height="30%">
 </div>
+
 
 上述解决方案使用了以下约束条件:
 
@@ -143,8 +146,9 @@ Red.width = 1.0 * Blue.width + 0.0
 不过，这并不是唯一可能的解决方案。这里有一个同样有效的方法:
 
 <div align="center">    
-<img src="./imgs/two_view_example_2_2x.png" width="100%" height="100%">
+<img src="./imgs/two_view_example_2_2x.png" width="30%" height="30%">
 </div>
+
 
 你不需要将蓝框的顶部和底部固定到它的父视图中，而是让蓝框的顶部与红框的顶部对齐。同样，将蓝框的底部与红框的底部对齐。约束条件如下所示：
 
@@ -173,3 +177,4 @@ Red.width = 1.0 * Blue.width + 0.0
 > 第一个解决方案在删除视图时更加健壮。从视图层次结构中删除一个视图也会删除引用该视图的所有约束。因此，如果您删除红色视图，蓝色视图将保留三个约束来保持它的位置。你只需要添加一个约束，就可以得到一个有效的布局。在第二个解决方案中，删除红色视图将只给蓝色视图留下一个约束。
 >
 > 另一方面，在第一个解决方案中，如果你希望视图的顶部和底部对齐，你必须确保它们的顶部和底部约束使用相同的常量值。如果你改变了一个常数，你必须记住也要改变另一个常数。
+
