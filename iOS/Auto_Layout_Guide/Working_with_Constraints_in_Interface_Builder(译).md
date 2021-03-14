@@ -1,4 +1,5 @@
 # 目录
+
    * [Working with Constraints in Interface Builder(可视化使用约束)](#working-with-constraints-in-interface-builder可视化使用约束)
       * [Control-Dragging Constraints(控件拖拽使用约束)](#control-dragging-constraints控件拖拽使用约束)
       * [Using the Stack, Align, Pin and Resolve Tools](#using-the-stack-align-pin-and-resolve-tools)
@@ -20,6 +21,7 @@
          * [Semantic Content](#semantic-content)
       * [Rules of Thumb](#rules-of-thumb)
    * [源文档](#源文档)
+
 # Working with Constraints in Interface Builder(可视化使用约束)
 
 在`Interface Builder`中设置自动布局约束主要有三个方式:你可以在视图之间使用`control-drag`，你可以使用`Pin`和`Align`工具，你可以让`Interface Builder`为你设置约束，然后编辑或修改结果。每种方法都有自己的优缺点。大多数开发者发现他们更喜欢使用一种方法;但是，熟悉这三种方法可以让你根据手头的任务在工具之间快速切换。
@@ -254,7 +256,40 @@ iOS添加了一些与自动布局交互的独特功能，包括`top and bottom l
 * 尽可能使用`stack views`
 
   `stack views`管理其内容的布局，极大地简化了布局的其余部分所需的约束逻辑。只有当`stack views`不能提供你需要的行为时，才求助于自定义约束。
--
+
+* 在视图和它最近的邻居之间创建约束
+
+  如果有两个相邻的按钮，则将第二个按钮的`leading`约束为第一个按钮的`trailing`。第二个按钮通常不应该有跨越第一个按钮到视图边缘的约束。
+
+* 避免给视图一个固定的高度或宽度
+
+  自动布局的关键在于动态响应更改，设置固定大小会使视图失去适应的能力。但是，你可能想要为视图设置最小或最大的尺寸。
+
+* 如果你在设置约束时有困难，尝试使用`Pin`和`Align`工具，尽管这些工具可能比拖拽控件慢一些，但是它们允许你在创建约束之前验证所涉及的精确值和项。这种额外的健全性检查很有帮助，特别是在你刚开始使用约束时
+
+* 当自动更新`items`的`frame`时要小心，如果`item`没有足够的约束来完全指定其大小和位置，则未定义更新行为，视图经常消失，要么是因为它们的高度或宽度被设置为零，要么是因为它们被意外地定位在屏幕之外
+
+* 确保布局中的所有视图都有有意义的名称，这使得在使用这些工具时更容易识别视图
+
+  系统根据标签和按钮的文本或标题自动命名它们，对于其他视图，你可能需要在`Identity inspector`中设置一个`Xcode`特定的标签(或者在文档大纲中双击并编辑视图的名称)。
+
+* 总是使用`leading`和`trailing`约束，而不是左右约束。
+
+  你总是可以使用它的`semanticContentAttribute`属性(iOS)或`userInterfaceLayoutDirection`属性(OS X)来调整视图如何解释它的`leading`和`trailing`
+  
+* 在iOS中，当将一个`item`约束到视图控制器根视图的边缘时，使用以下约束:
+
+  * **Horizontal constraints** 对于大多数控件，对布局边距使用零点约束。系统会根据设备是什么以及应用程序如何呈现视图控制器自动提供正确的间距。
+
+    对于从页边距到页边距填满根视图的文本对象，使用`readable content guides `而不是` layout margins`。
+
+    对于需要从边到边填充根视图的`item`(例如，背景图像)，使用视图的`leading`和`trailing`。
+
+  * **Vertical constraints** 如果视图扩展到各种`bar`底部，使用`top and bottom margins`，这在滚动视图中特别常见，它允许内容在`bar`下滚动，但是请注意，你可能需要修改滚动视图的`contentInset`和`scrollIndicatorInsets`属性来正确设置内容的初始位置。如果视图没有在`bar`下展示，则将视图约束到`top and bottom layout guides`。
+
+* 当以编程方式实例化视图时，请确保将它们的`translatesAutoresizingMaskIntoConstraints`属性设置为`NO`。默认情况下，系统会自动创建一组基于视图`frame`及其`autoresizing mask`的约束。当你添加自己的约束时，它们不可避免地会与自动生成的约束发生冲突，这就产生了一个无法令人满意的布局。
+
+* 请注意OS X和iOS的布局计算方式不同。
 
   在OS X中，自动布局可以修改窗口的内容和窗口的大小。
   
