@@ -178,3 +178,133 @@ Red.width = 1.0 * Blue.width + 0.0
 >
 > 另一方面，在第一个解决方案中，如果你希望视图的顶部和底部对齐，你必须确保它们的顶部和底部约束使用相同的常量值。如果你改变了一个常数，你必须记住也要改变另一个常数。
 
+## Constraint Inequalities(约束不等式)
+
+到目前为止，所有的例子都是约束等式，但这只是介绍了一部分。约束也可以表示不等式，具体地说，约束的关系可以等于、大于或等于、小于或等于。
+
+例如，您可以使用约束来定义视图的最小或最大尺寸(清单3-3)。
+
+清单3-3 指定最小和最大尺寸
+
+```
+// Setting the minimum width
+View.width >= 0.0 * NotAnAttribute + 40.0
+ 
+// Setting the maximum width
+View.width <= 0.0 * NotAnAttribute + 280.0
+```
+
+**一旦你开始使用不等式，每个视图每个维度的两个约束规则就失效了**。**你总是可以用两个不等式来代替一个等式关系**。在清单3-4中，单个相等关系和一对不等式产生相同的行为。
+
+清单3-4 用两个不等式代替一个相等关系
+
+```
+// A single equal relationship
+Blue.leading = 1.0 * Red.trailing + 8.0
+ 
+// Can be replaced with two inequality relationships
+Blue.leading >= 1.0 * Red.trailing + 8.0
+Blue.leading <= 1.0 * Red.trailing + 8.0
+```
+
+相反的并不总是正确的，因为两个不等式并不总是等价于一个相等关系。
+
+例如，清单3-3中的不等式限制了视图宽度的可能值的范围——但是它们本身并没有定义宽度。你仍然需要额外的水平约束来定义视图在这个范围内的位置和大小。
+
+## Constraint Priorities(约束优先级)
+
+默认情况下，所有约束都是有优先级。自动布局必须计算出满足所有约束的解决方案。如果不能，则会发生错误。 自动布局将关于无法满足的约束的信息打印到控制台，并选择要修复的约束之一(Auto Layout prints information about the unsatisfiable constraints to the console, and chooses one of the constraints to break. )。然后，它在没有破坏约束的情况下重新计算解。有关更多信息，请参见[Unsatisfiable Layouts](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/ConflictingLayouts.html#//apple_ref/doc/uid/TP40010853-CH19-SW1)。
+
+你还可以创建可选的约束，所有约束的优先级都在1到1000之间，优先级为1000的约束是必需的，所有其他约束都是可选的。
+
+在计算解决方案时，自动布局尝试以优先级从高到低的顺序满足所有约束。如果它不能满足一个可选的约束，则跳过该约束并继续执行下一个约束。
+
+即使一个可选的约束没有满足条件，它仍然会影响布局。如果在跳过约束后布局中存在任何歧义，则系统会选择最接近约束的解决方案。这样，未满足的可选约束会成为向其拉动视图的力量。
+
+**可选的约束条件和不等式通常是密不可分的**。例如，在清单3-4中，你可以为这两个不等式提供不同的优先级。大于或等于关系可能是必需的(优先级为1000)，小于或等于关系的优先级较低(优先级为250)。这意味着蓝色视图不能靠近红色视图`trailing`的8个屏幕点。然而，其他限制因素可能会把它拉得更远。尽管如此，可选的约束将蓝色视图拉向红色视图，确保它尽可能接近8个屏幕点的间距(给定布局中的其他约束)。
+
+> 注意：不必强制使用所有1000个优先级值。事实上，优先级一般应该围绕系统定义的低(250)、中(500)、高(750)和必需(1000)优先级。You may need to make constraints that are one or two points higher or lower than these values, to help prevent ties. If you’re going much beyond that, you probably want to reexamine your layout’s logic.
+>
+> 有关iOS上预定义的约束常量列表，请参阅UILayoutPriority enum。对于OS X，请参阅布局优先级常量。
+
+## Intrinsic Content Size(内部内容尺寸)
+
+到目前为止，所有的例子都使用了约束来定义视图的位置和大小。然而，有些视图有一个给定的当前内容的自然大小。这被称为它们的`Intrinsic Content Size`。例如，一个`button`的内部内容尺寸是它的标题大小加上一个小的边距(For example, a button’s intrinsic content size is the size of its title plus a small **margin**.)。
+
+不是所有的视图都有内部内容尺寸。对于这样做的视图，内部内容尺寸可以定义视图的高度、宽度或两者。如表3-1所示。
+
+表3-1常用控件的内部内容尺寸
+
+| View                                       | Intrinsic content size                                       |
+| ------------------------------------------ | ------------------------------------------------------------ |
+| UIView and NSView                          | 没有 intrinsic content size                                  |
+| Sliders                                    | 只定义宽度(iOS)<br/>根据滑块的类型(OS X)定义宽度、高度或两者都定义。 |
+| Labels, buttons, switches, and text fields | 定义高度和宽度                                               |
+| Text views and image views                 | Intrinsic content size可以变化                               |
+
+内部内容尺寸基于视图的当前内容。**Label或Button的内部内容尺寸是基于显示的文本数量和使用的字体**。对于其他视图，内部内容尺寸更加复杂。例如，一个空的`image view`没有内在的内容大小。但是，一旦添加了图像，其内部内容尺寸就会被设置为图像的大小。
+
+文本视图的内部内容尺寸取决于内容本身、是否启用了滚动，以及应用于视图的其他约束。例如，在启用滚动时，视图没有内部内容尺寸。**在禁用滚动的情况下，默认情况下，视图的内部内容尺寸是根据不带换行的文本大小计算的**。例如，如果文本中没有换行，它将计算将内容布局为一行文本所需的高度和宽度。如果你添加约束来指定视图的宽度，内部内容尺寸定义了显示给定宽度的文本所需的高度。
+
+**自动布局使用每个维度的一对约束来表示视图的内部内容尺寸。content hugging将视图向内拉，使其紧贴着内容。`compression resistance `将视图向外推，这样它就不会剪掉内容**。
+
+<div align="center">    
+<img src="./imgs/intrinsic_content_size_2x.png" width="50%" height="50%">
+</div>
+
+这些约束是使用清单3-5中所示的不等式定义的。这里，`IntrinsicHeight`和`IntrinsicWidth`常量代表了来自视图内部内容尺寸的高度和宽度值。
+
+清单3-5 **Compression-Resistance**和**Content-Hugging**方程
+
+```
+// Compression Resistance
+View.height >= 0.0 * NotAnAttribute + IntrinsicHeight
+View.width >= 0.0 * NotAnAttribute + IntrinsicWidth
+ 
+// Content Hugging
+View.height <= 0.0 * NotAnAttribute + IntrinsicHeight
+View.width <= 0.0 * NotAnAttribute + IntrinsicWidth
+```
+
+每个约束都有自己的优先级。默认情况下，视图的**Content-Hugging**优先级为250，**Compression-Resistance**优先级为750。**因此，拉伸视图比收缩视图更容易**。对于大多数控件来说，这是期望的行为。例如，你可以安全地拉伸一个大于其内部内容尺寸的按钮;然而，如果你缩小它，它的内容可能会被剪切。请注意，`Interface Builder`可能偶尔会修改这些优先级，以防止绑定。更多信息，请参阅 [Setting Content-Hugging and Compression-Resistance Priorities](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithConstraintsinInterfaceBuidler.html#//apple_ref/doc/uid/TP40010853-CH10-SW2)。
+
+只要可能，在布局中使用视图的内部内容尺寸。它允许你的布局动态地适应视图内容的变化。它还减少了创建一个无歧义、无冲突的布局所需要的约束，但你将需要管理视图的`content-hugging`和`compression-resistance`(**CHCR**)优先级。以下是一些处理内部内容尺寸的技巧:
+
+* 当拉伸一系列视图来填充空间时，如果所有视图都具有相同的`content-hugging`优先级，那么布局是不明确的。自动布局不知道哪个视图应该被拉伸。
+
+  一个常见的例子是`label`和`text field`在同一水平上成对。通常，你希望`text field`拉伸以填充额外的空间，而`label`保持其固有的内容大小。要确保这一点，请确保`text field`的水平`content-hugging`优先级低于`label`的优先级。
+
+  实际上，这个示例非常常见，以至于`Interface Builder`自动为你处理它，将所有`label`的`content-hugging`设置为251。如果你正在以编程方式创建布局，则需要自己修改`content-hugging`优先级。
+
+* 当带有不可见背景的视图(如`button`或`label`)被意外拉伸到超出其内部内容尺寸时，经常会出现奇怪和意想不到的布局。实际的问题可能并不明显，因为文本只是出现在了错误的位置。为了防止不必要的拉伸，增大`content-hugging`优先级。
+
+* `Baseline`约束只适用于处于其内部内容高度的视图。如果视图被垂直拉伸或压缩，基线约束不再正确对齐。
+
+* 有些视图，比如开关，应该始终以其内部内容尺寸显示。根据需要增加他们的`CHCR`优先级，以防止拉伸或压缩。
+
+* 避免为视图添加`required`的`CHCR`优先级，通常，视图大小错误要比它意外地产生冲突要好。如果视图应该始终保持其内部内容尺寸，那么考虑使用非常高的优先级(999)。
+
+  > This approach generally keeps the view from being stretched or compressed but still provides an emergency pressure valve, just in case your view is displayed in an environment that is bigger or smaller than you expected.
+
+### Intrinsic Content Size Versus Fitting Size
+
+`Intrinsic Content Size`充当自动布局的输入。当一个视图具有`Intrinsic Content Size`时，系统会生成约束来表示该大小，并使用约束来计算布局。
+
+另一方面，`Fitting size`是自动布局引擎的输出。它是根据视图的约束为视图计算的大小。**如果视图使用自动布局来布局它的子视图，那么系统可能能够根据它的内容为视图计算一个合适的大小**。
+
+`stack view`就是一个很好的例子，排除任何其他限制，系统根据其内容和属性计算`stack view`的大小。在许多方面，`stack view`的作用就像它自有一个`Intrinsic Content Size`:你可以创建一个有效的布局，只需使用一个垂直和一个水平的约束来定义它的位置。但是**它的大小是由自动布局计算的**——它不是自动布局的输入。设置`stack view`的`CHCR`优先级没有效果，因为`stack view`没有`Intrinsic Content Size`。
+
+如果你需要相对于`stack view`之外的`item`来调整`stack view`的`fitting size`，可以创建显式的约束来捕获这些关系，或者修改`stack view`内容相对于`stack view`之外的`item`的`CHCR`优先级。
+
+## Interpreting Values
+
+自动布局中的值总是以`points`为单位。然而，这些度量的确切含义可能会根据所涉及的属性和视图的布局方向而变化。
+
+| Auto Layout Attributes                                       | Value    | Notes                                                        |
+| ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| ![image: ../Art/ALGuide_Height.pdf](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/ALGuide_Height_2x.png)Height<br>![image: ../Art/ALGuide_Width.pdf](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/Art/ALGuide_Width_2x.png)Width | 视图尺寸 | 这些属性可以被赋值为常量，也可以与其他高度和宽度属性组合使用。这些值不能为负。 |
+|                                                              |          |                                                              |
+|                                                              |          |                                                              |
+|                                                              |          |                                                              |
+|                                                              |          |                                                              |
+
