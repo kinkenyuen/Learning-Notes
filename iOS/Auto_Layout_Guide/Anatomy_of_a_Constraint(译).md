@@ -5,7 +5,7 @@
 示例方程如下所示。
 
 <div align="center">    
-<img src="./imgs/view_formula_2x.png" width="50%" height="50%">
+<img src="./imgs/view_formula_2x.png" width="100%" height="100%">
 </div>
 
 这个约束规定，红色视图的`leading`(前面)必须距离蓝色视图`trailing`(后面)8个屏幕点。它的方程有几个部分:
@@ -25,8 +25,9 @@
 在自动布局中，属性定义了一个可以被约束的特性。一般来说，这包括四边(`edge`)(前面(`leading`)、后面(`trailing`)、顶部(`top`)和底部(`bottom`))，以及高度(`height`)、宽度(`width`)和垂直(`vertical`)和水平(`horizontal`)中心。文本`items`也有一个或多个`baseline`属性。
 
 <div align="center">    
-<img src="./imgs/attributes_2x.png" width="50%" height="50%">
+<img src="./imgs/attributes_2x.png" width="100%" height="100%">
 </div>
+
 
 有关属性的完整列表，请参阅`NSLayoutAttribute`枚举。
 
@@ -91,7 +92,7 @@ View.height = 2.0 * View.width + 0.0
 通常，约束必须定义每个视图的大小和位置(两个维度)。假设父视图的大小已经设置好了(例如，iOS中的一个场景的根视图)，**一个无歧义的、可满足的布局需要每个视图每个维度两个约束**(不包括父视图)。然而，在选择要使用哪些约束时，你有很多选择。例如，以下三种布局都能产生明确的、可满足的布局(只展示水平约束):
 
 <div align="center">    
-<img src="./imgs/constraint_examples_2x.png" width="50%" height="50%">
+<img src="./imgs/constraint_examples_2x.png" width="100%" height="100%">
 </div>
 * 第一个布局限制了视图的`leading`相对于父视图的`leading`。它也给视图一个固定的宽度。`trailing`的位置可以根据父视图的大小和其他约束来计算。
 * 第二个布局限制了视图的`leading`相对于父视图的`leading`。它也限制了视图的`trailing`相对于父视图的`trailing`。视图的宽度可以根据父视图的大小和其他约束来计算。
@@ -108,17 +109,17 @@ View.height = 2.0 * View.width + 0.0
 下面的插图显示了纵向和横向的视图:
 
 <div align="center">    
-<img src="./imgs/Blocks_Portrait_2x.png" width="50%" height="50%">
+<img src="./imgs/Blocks_Portrait_2x.png" width="100%" height="100%">
 </div>
 
 <div align="center">    
-<img src="./imgs/Blocks_Landscape_2x.png" width="50%" height="50%">
+<img src="./imgs/Blocks_Landscape_2x.png" width="100%" height="100%">
 </div>
 
 那么这些约束应该是什么样的呢?下面的插图展示了一个简单的解决方案:
 
 <div align="center">    
-<img src="./imgs/two_view_example_1_2x.png" width="50%" height="50%">
+<img src="./imgs/two_view_example_1_2x.png" width="100%" height="100%">
 </div>
 
 上述解决方案使用了以下约束条件:
@@ -142,7 +143,7 @@ Red.width = 1.0 * Blue.width + 0.0
 不过，这并不是唯一可能的解决方案。这里有一个同样有效的方法:
 
 <div align="center">    
-<img src="./imgs/two_view_example_2_2x.png" width="50%" height="50%">
+<img src="./imgs/two_view_example_2_2x.png" width="100%" height="100%">
 </div>
 
 你不需要将蓝框的顶部和底部固定到它的父视图中，而是让蓝框的顶部与红框的顶部对齐。同样，将蓝框的底部与红框的底部对齐。约束条件如下所示：
