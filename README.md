@@ -9,7 +9,7 @@
 
 * [Auto Layout Without Constraints(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Auto_Layout_Without_Constraints(译).md)
 
-* [Anatomy of a Constraint(译)]()
+* [Anatomy of a Constraint(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Anatomy_of_a_Constraint(译).md)
 
 * [Working with Constraints in Interface Builder(译)]()
 
