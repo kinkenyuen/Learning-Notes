@@ -227,7 +227,7 @@ iOS添加了一些与自动布局交互的独特功能，包括`top and bottom l
 
 在`Interface Builder`中，控件在视图和它的父视图之间拖动约束时默认使用边距属性。当使用`Pin`工具时，你可以切换"`Constrain to margins`"复选框，如果勾选了，产生的约束将使用父视图的边距属性，如果未选中，它们会使用父视图的边缘。类似地，在`Attribute inspector`中编辑约束时，`item1`和`item2`弹出的菜单包括一个`Relative to margin`选项，效果与前者一样。
 
-最后，当以编程方式创建父视图边距的约束时，使用`layoutMarginsGuide`属性并直接创建`ayout guide`的约束。这使你使用`guide`的`layout anchors`来创建约束，从而提供易于阅读的简化API。
+最后，当以编程方式创建父视图边距的约束时，使用`layoutMarginsGuide`属性并直接创建`layout guide`的约束。这使你使用`guide`的`layout anchors`来创建约束，从而提供易于阅读的简化API。
 
 ### Readable Content Guides
 
