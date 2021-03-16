@@ -17,7 +17,7 @@
 
 * [Stack Views(译) ](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Stack_Views(译).md)堆栈视图的使用技巧
 
-* [Simple Constraints(译)]()
+* [Simple Constraints(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Simple_Constraints(译).md) 使用约束布局的案例
 
 * [Views with Intrinsic Content Size(译)]()
 
