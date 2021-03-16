@@ -135,3 +135,174 @@
 
 `image view`应该缩小，以便与`Name row stack view`高度相同。然而，`stack view`只是松散地聚合它们的内容。这意味着`image view`的`vertical compression resistance`必须非常低，因此`image view`收缩而不是`stack view`扩展。此外，`image view`的宽高比约束使布局复杂化，因为它允许垂直和水平约束交互。这意味着`text fields`的`horizontal content hugging`也必须非常低，否则它们将防止`image view`收缩。在这两种情况下，将优先级设置为48或更低。(这一段很难懂，要好好理解)
 
+## Dynamic Stack View
+
+这个例子演示了在运行时动态地从`stack view`中添加和删除`item`，对`stack view`的所有更改都是动态的，此外，`stack view`如果被添加到`scroll view`中，可以显示过长的列表。
+
+<div align="center">    
+<img src="./imgs/Dynamic_Stack_View_Screenshot_2x.png" width="50%" height="50%">
+</div>
+
+> 注意：这个例子是为了演示如何动态地使用stack view，以及如何在scrollview中使用stack view，在实际应用中，这个例子的行为应该使用UITableView来实现，通常，你不应该使用动态stack view来实现一个表视图，相反，使用它们来创建动态的而使用任何其他技术都无法轻松构建的用户界面。
+
+### Views and Constraints
+
+初始用户界面非常简单，在你的场景中放置一个`scrollview`，并调整它的大小以填充场景。然后，在`scrollview`中放置一个`stack view`，并在`stack view`中放置添加按钮。完成后，设置以下约束:
+
+<div align="center">    
+<img src="./imgs/dynamic_stack_view_2x.png" width="50%" height="50%">
+</div>
+
+```
+1. Scroll View.Leading = Superview.LeadingMargin
+2. Scroll View.Trailing = Superview.TrailingMargin
+3. Scroll View.Top = Superview.TopMargin
+4. Bottom Layout Guide.Top = Scroll View.Bottom + 20.0
+5. Stack View.Leading = Scroll View.Leading
+6. Stack View.Trailing = Scroll View.Trailing
+7. Stack View.Top = Scroll View.Top
+8. Stack View.Bottom = Scroll View.Bottom
+9. Stack View.Width = Scroll View.Width
+```
+
+### Attributes
+
+在`Attributes inspector`中，设置以下属性:
+
+| Stack      | Axis     | Alignment | Distribution  | Spacing |
+| ---------- | -------- | --------- | ------------- | ------- |
+| Stack View | Vertical | Fill      | Equal Spacing | 0       |
+
+### Code
+
+这个方法需要一些代码来向`stack view`添加`item`并从`stack view`中删除`item`，为你的场景创建一个自定义的视图控制器，同时带有滚动视图和堆栈视图的`outlet`。
+
+```swift
+class DynamicStackViewController: UIViewController {
+    
+    @IBOutlet weak private var scrollView: UIScrollView!
+    @IBOutlet weak private var stackView: UIStackView!
+    
+    // Method implementations will go here...
+    
+}
+```
+
+接下来，重写`viewDidLoad`方法来设置`scrollview`的初始位置,您希望`scrollview`的内容从状态栏下面开始。
+
+```swift
+override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    // setup scrollview
+    let insets = UIEdgeInsetsMake(20.0, 0.0, 0.0, 0.0)
+    scrollView.contentInset = insets
+    scrollView.scrollIndicatorInsets = insets
+}
+```
+
+为`Add Item`添加一个`action`方法
+
+```swift
+// MARK: Action Methods
+ 
+@IBAction func addEntry(sender: AnyObject) {
+    
+    let stack = stackView
+    let index = stack.arrangedSubviews.count - 1
+    let addView = stack.arrangedSubviews[index]
+    
+    let scroll = scrollView
+    let offset = CGPoint(x: scroll.contentOffset.x,
+                         y: scroll.contentOffset.y + addView.frame.size.height)
+    
+    let newView = createEntry()
+    newView.hidden = true
+    stack.insertArrangedSubview(newView, atIndex: index)
+    
+    UIView.animateWithDuration(0.25) { () -> Void in
+        newView.hidden = false
+        scroll.contentOffset = offset
+    }
+}
+```
+
+这个方法为`scroll view`计算一个新的偏移量，然后创建一个新的`item`视图，`item`视图被隐藏，并添加到`stack`中。隐藏的视图不影响`stack`的外观或布局——因此`stack`的外观保持不变。然后，在一个动画`block`中，视图被显示，滚动偏移被更新，使视图的外观动画化。
+
+添加一个类似的方法来删除`item`；但是，与`addEntry`方法不同的是，该方法没有链接到`Interface Builder`中的任何控件。相反，当视图创建时，应用程序将以编程方式将每个`item`视图链接到这个方法。
+
+```swift
+func deleteStackView(sender: UIButton) {
+    if let view = sender.superview {
+        UIView.animateWithDuration(0.25, animations: { () -> Void in
+            view.hidden = true
+        }, completion: { (success) -> Void in
+            view.removeFromSuperview()
+        })
+    }
+}
+```
+
+这个方法将视图隐藏，动画完成后，它从视图层次结构中删除视图，这将自动从`stack view`的排列视图列表中删除视图。
+
+尽管`item`视图可以是任何视图，但本例使用了一个包含日期`label`、一个包含随机十六进制字符串的`label`和一个`delete`按钮的`stack view`。
+
+```swift
+// MARK: - Private Methods
+private func createEntry() -> UIView {
+    let date = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .ShortStyle, timeStyle: .NoStyle)
+    let number = "\(randomHexQuad())-\(randomHexQuad())-\(randomHexQuad())-\(randomHexQuad())"
+    
+    let stack = UIStackView()
+    stack.axis = .Horizontal
+    stack.alignment = .FirstBaseline
+    stack.distribution = .Fill
+    stack.spacing = 8
+    
+    let dateLabel = UILabel()
+    dateLabel.text = date
+    dateLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleBody)
+    
+    let numberLabel = UILabel()
+    numberLabel.text = number
+    numberLabel.font = UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)
+    
+    let deleteButton = UIButton(type: .RoundedRect)
+    deleteButton.setTitle("Delete", forState: .Normal)
+    deleteButton.addTarget(self, action: "deleteStackView:", forControlEvents: .TouchUpInside)
+    
+    stack.addArrangedSubview(dateLabel)
+    stack.addArrangedSubview(numberLabel)
+    stack.addArrangedSubview(deleteButton)
+    
+    return stack
+}
+ 
+private func randomHexQuad() -> String {
+    return NSString(format: "%X%X%X%X",
+                    arc4random() % 16,
+                    arc4random() % 16,
+                    arc4random() % 16,
+                    arc4random() % 16
+        ) as String
+}
+}
+```
+
+### Discussion
+
+正如这个例子所演示的，视图可以在运行时从`stack view`中添加或删除。`stack view`的布局自动调整，以补偿对其排列的视图数组的更改。然而，有几点需要记住:
+
+* 隐藏的视图仍然在`stack view`的排列视图数组中，但是，它们不会被显示出来，也不会影响其他排列好的视图的布局。
+* 将视图添加到`stack view`的排列视图数组中会自动将其添加到视图层次结构中。
+* 从`stack view`的排列视图数组中移除一个视图不会自动从视图层次结构中移除它；然而，从视图层次结构中移除视图确实会从排列视图数组中移除它。
+* 在iOS中，视图的`hidden`属性通常不是动画化的，然而，一旦视图被放置到`stack view`的视图数组中，这个属性就会变成动画，实际的动画是由`stack view`管理的，而不是视图。使用`hidden`属性可以将视图添加到`stack`或从`stack`中移除。
+
+这个实例还介绍了使用`scrollview`自动布局的想法。在这里，`stack view`和`scrollview`之间的约束设置成`scrollview`内容区域的大小。等宽约束显式地设置`stack view`(以及内容大小)以水平填充`scrollview`，垂直方向，内容大小基于`stack view`的`fitting size`，当用户添加更多`item`时，`stack view`会增大，当有太多的内容需要显示到屏幕时，滚动自动启用。
+
+更多信息，请参阅[Working with Scroll Views](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/WorkingwithScrollViews.html#//apple_ref/doc/uid/TP40010853-CH24-SW1)
+
+# 源文档
+
+[Stack Views](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/LayoutUsingStackViews.html#//apple_ref/doc/uid/TP40010853-CH11-SW1)
+
