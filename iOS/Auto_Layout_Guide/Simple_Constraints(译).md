@@ -217,6 +217,8 @@
 <div align="center">    
 <img src="./imgs/two_views_with_complex_widths_2x.png" width="60%" height="60%">
 </div>
+
+
 ```
 1. Blue View.Leading = Superview.LeadingMargin
 2. Red View.Leading = Blue View.Trailing + Standard
@@ -228,6 +230,8 @@
 8. Red View.Width = 2.0 x Blue View.Width (Priority 750)
 9. Blue View.Width >= 150.0
 ```
+
+
 
 ### Attributes
 
