@@ -5,17 +5,17 @@
 
 ## Auto Layout Guide
 
-* [Understanding Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Understanding_Auto_Layout(译).md)
+* [Understanding Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Understanding_Auto_Layout(译).md) 理解自动布局
 
-* [Auto Layout Without Constraints(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Auto_Layout_Without_Constraints(译).md)
+* [Auto Layout Without Constraints(译) ](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Auto_Layout_Without_Constraints(译).md)在不使用约束的情况下自动布局
 
-* [Anatomy of a Constraint(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Anatomy_of_a_Constraint(译).md)
+* [Anatomy of a Constraint(译) ](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Anatomy_of_a_Constraint(译).md)详细解析自动布局中的约束
 
-* [Working with Constraints in Interface Builder(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Working_with_Constraints_in_Interface_Builder(译).md)
+* [Working with Constraints in Interface Builder(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Working_with_Constraints_in_Interface_Builder(译).md) 在IB可视化构建中使用约束
 
 ---
 
-* [Stack Views(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Stack_Views(译).md)
+* [Stack Views(译) ](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Stack_Views(译).md)堆栈视图的使用技巧
 
 * [Simple Constraints(译)]()
 
