@@ -15,7 +15,7 @@
 
 ---
 
-* [Stack Views(译)]()
+* [Stack Views(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Stack_Views(译).md)
 
 * [Simple Constraints(译)]()
 
