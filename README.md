@@ -23,7 +23,7 @@
 
 ---
 
-* [Debugging Auto Layout(译)]()
+* [Debugging Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Debugging_Auto_Layout(译).md)
 
 * [Advanced Auto Layout(译)]()
 
