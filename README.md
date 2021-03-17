@@ -19,7 +19,7 @@
 
 * [Simple Constraints(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Simple_Constraints(译).md) 使用约束布局的案例
 
-* [Views with Intrinsic Content Size(译)]()
+* [Views with Intrinsic Content Size(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Views_with_Intrinsic_Content_Size(译).md) 带有`Intrinsic Contens Size`控件的布局
 
 ---
 
