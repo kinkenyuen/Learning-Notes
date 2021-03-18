@@ -25,7 +25,7 @@
 
 * [Debugging Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Debugging_Auto_Layout(译).md) 调试约束导致的问题
 
-* [Advanced Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Advanced_Auto_Layout(译).md)
+* [Advanced Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Advanced_Auto_Layout(译).md) 自动布局高级技巧
 
 * [Visual Format Language(译)]()
 
