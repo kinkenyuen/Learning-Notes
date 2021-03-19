@@ -70,6 +70,7 @@ self.view.layoutMargins = UIEdgeInsets(top: self.view.layoutMargins.top,
 <div align="center">    
 <img src="./imgs/layout_4.jpg" width="50%" height="50%">
 </div>
+
 `ContentView`的`frame`分别为
 
 ```
