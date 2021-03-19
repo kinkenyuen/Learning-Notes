@@ -251,11 +251,26 @@ self.view.directionalLayoutMargins = NSDirectionalEdgeInsets(top: self.view.dire
 
 ## automaticallyAdjustsScrollViewInsets property
 
+在iOS 7开始，苹果介绍使用`UIViewController` 的`automaticallyAdjustsScrollViewInsets`属性，它让系统根据顶部或底部的导航元素存在与否自动计算滚动视图(`scrollview`及其子类)的`insets`。该属性默认值为`YES`，效果如下：
+
+<div align="center">    
+<img src="./imgs/layout_13.png" width="60%" height="60%">
+</div>
+
+根据属性值，当为`YES`(左边)，滚动视图的内容从导航栏下方开始布局；当为`NO`(右边)，滚动视图的内容从当前控制器的`root view`最顶部开始布局
+
 ## contentInsetAdjustmentBehavior property
 
-# Any pieces of advice or remarks?
+iOS11之后，`automaticallyAdjustsScrollViewInsets`属性不建议使用了，取而代之的，是在`UIScrollView`定义的`contentInsetAdjustmentBehavior`属性。
 
+该属性与`Safe Area`有联系，它有以下值：
 
+* `UIScrollViewContentInsetAdjustmentAutomatic`类似于`scrollableAxes`，它是为了向后兼容而存在，当`view controller`在导航控制器下并且持有一个滚动视图，并且`automaticallyAdjustsScrollViewInsets = true`，系统自动调整顶部和底部的`contentInset`，无论滚动视图是否滚动
+* `UIScrollViewContentInsetAdjustmentScrollableAxes` 调整可滚动轴的边缘(`contentSize.width/height > frame.size.width/height`或`alwaysBounceHorizontal/Vertical = true`)，/不表示除法运算，而是或者的意思
+* `UIScrollViewContentInsetAdjustmentNever` 不自动调整
+* `UIScrollViewContentInsetAdjustmentAlways` `contentInset`总是根据滚动视图的`safeAreaInsets`调整
 
-
+<div align="center">    
+<img src="./imgs/layout_14.png" width="60%" height="60%">
+</div>
 
