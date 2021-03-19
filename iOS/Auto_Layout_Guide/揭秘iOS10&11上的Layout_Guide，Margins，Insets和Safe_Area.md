@@ -3,7 +3,8 @@
 <div align="center">    
 <img src="./imgs/layout_1.png" width="60%" height="60%">
 </div>
-<center>iPhone X水平方向上的安全区域</center>
+
+<p align="center">iPhone X水平方向上的安全区域</p>
 
 iOS11改进了很多关于视图如何布局用户界面的方法，同时也引入了新的屏幕尺寸设备`iPhone X`，新布局的出现，你可能会有点困惑，那么是时候回顾和揭开`margins`、`insets`、`scroll views`和`Safe Area`的神秘面纱了。
 
@@ -31,9 +32,7 @@ iOS11改进了很多关于视图如何布局用户界面的方法，同时也引
 @property (nonatomic) UIEdgeInsets layoutMargins API_AVAILABLE(ios(8.0));
 ```
 
-<center>UIView.h中描述的layoutMargins</center>
-
-
+<p align="center">UIView.h中描述的layoutMargins</p>
 
 ## directionalLayoutMargins property
 
