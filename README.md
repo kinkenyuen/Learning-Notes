@@ -35,6 +35,8 @@
 
 * [ScrollView Auto_Layout 自适应高度](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/ScrollView_Auto_Layout_自适应高度.md)
 
+* [iOS11前后的界面布局变化](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/揭秘iOS10%2611上的Layout_Guide，Margins，Insets和Safe_Area.md) 一篇国外博文的翻译，介绍自动布局在iOS11及之后的变化
+
 ## 内存管理
 
 ---
