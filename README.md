@@ -37,6 +37,8 @@
 
 * [iOS11前后的界面布局变化](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/揭秘iOS10%2611上的Layout_Guide，Margins，Insets和Safe_Area.md) 一篇国外博文的翻译，介绍自动布局在iOS11及之后的变化
 
+* [Layout Margins 与 preservesSuperviewLayoutMargins](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/layout_margins_and_preserves_superview_layout_margins.md)
+
 ## 内存管理
 
 ---
