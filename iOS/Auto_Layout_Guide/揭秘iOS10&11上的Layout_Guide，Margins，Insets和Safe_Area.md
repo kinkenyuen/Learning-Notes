@@ -1,3 +1,21 @@
+# 目录
+
+   * [前言](#前言)
+   * [揭秘iOS10&amp;11前后的Layout Guide，Margins，Insets和Safe_Area](#揭秘ios1011前后的layout-guidemarginsinsets和safe_area)
+   * [Margins](#margins)
+      * [layoutMargins property](#layoutmargins-property)
+      * [directionalLayoutMargins property](#directionallayoutmargins-property)
+      * [Margins did change](#margins-did-change)
+      * [System minimum layout margins](#system-minimum-layout-margins)
+      * [Reminder](#reminder)
+   * [Safe Area](#safe-area)
+      * [A deprecated layout guide](#a-deprecated-layout-guide)
+      * [A new layout guide called safeAreaLayoutGuide](#a-new-layout-guide-called-safearealayoutguide)
+      * [Insets did change](#insets-did-change)
+   * [UIScrollView and Insets](#uiscrollview-and-insets)
+      * [automaticallyAdjustsScrollViewInsets property](#automaticallyadjustsscrollviewinsets-property)
+      * [contentInsetAdjustmentBehavior property](#contentinsetadjustmentbehavior-property)
+
 # 前言
 
 本文是根据国外的一篇博文[Layout Guide, Margins, Insets and Safe Area demystified on iOS 10 & 11](https://blog.smartnsoft.com/layout-guide-margins-insets-and-safe-area-demystified-on-ios-10-11-d6e7246d7cb8)翻译的，其中穿插了自己的一些试验例子。
