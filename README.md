@@ -3,6 +3,28 @@
 
 # iOS
 
+## 内存管理
+
+* [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md)
+
+* [Memory Management Policy(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Memory_Management_Policy(译).md)
+
+* [Practical Memory Management(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Practical_Memory_Management（译）.md)
+
+* [Using Autorelease Pool Blocks(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Using_Autorelease_Pool_Blocks(译).md)
+
+---
+
+* [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
+
+---
+
+* [Memory Management Programming Guide For CoreFoundation(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP)
+
+* [Introduction to Core Foundation Design Concepts(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Introduction_to_Core_Foundation_Design_Concepts(译).md)
+
+---
+
 ## Auto Layout Guide
 
 * [Understanding Auto Layout(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Understanding_Auto_Layout(译).md) 理解自动布局
@@ -41,29 +63,8 @@
 
 * [视图层次布局相关的属性介绍与总结](https://stackoverflow.com/questions/37796884/on-ios-what-are-the-differences-between-margins-edge-insets-content-insets-a)
 
-## 内存管理
+## View Controller编程指南
 
----
-
-* [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md)
-
-* [Memory Management Policy(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Memory_Management_Policy(译).md)
-
-* [Practical Memory Management(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Practical_Memory_Management（译）.md)
-
-* [Using Autorelease Pool Blocks(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Using_Autorelease_Pool_Blocks(译).md)
-
----
-
-* [Objective-C 引用计数原理](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)
-
----
-
-* [Memory Management Programming Guide For CoreFoundation(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP)
-
-* [Introduction to Core Foundation Design Concepts(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Introduction_to_Core_Foundation_Design_Concepts(译).md)
-
----
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
@@ -81,7 +82,7 @@
 
 * [Glossary (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/术语表.md) 术语表
 
-# runloop
+## runloop
 * [深入理解RunLoop](https://blog.ibireme.com/2015/05/18/runloop/)
 
 * [iOS开发·RunLoop源码与用法完全解析](https://cloud.tencent.com/developer/article/1332254)
@@ -90,7 +91,7 @@
 
 * [使用runloop observer监控主线程runloop状态(卡顿)](https://github.com/kinkenyuen/MainThreadRunloopMonitor)
 
-# runtime
+## runtime
 
 * [+alloc分析](https://github.com/kinkenyuen/iOS-Notes/blob/main/runtime/%2Balloc%E5%88%86%E6%9E%90.md)
 
