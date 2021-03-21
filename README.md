@@ -65,6 +65,14 @@
 
 ## View Controller编程指南
 
+* [The Role of View Controllers(译)]() 视图控制器扮演的角色(职能)
+
+* [The View Controller Hierarchy(译)]() 视图控制器层次结构
+
+* [Design Tips(译)]() 视图控制器设计技巧
+
+--- 
+
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
