@@ -73,7 +73,7 @@
 
 --- 
 
-* [Defining Your Subclass(译)]()
+* [Defining Your Subclass(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Defining_Your_Subclass.md)
 
 * [Implementing a Container View Controller(译)]()
 
