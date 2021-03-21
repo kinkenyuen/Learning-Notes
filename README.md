@@ -69,7 +69,7 @@
 
 * [The View Controller Hierarchy(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/The_View_Controller_Hierarchy.md#presented-view-controllers-呈现视图控制器) 视图控制器层次结构
 
-* [Design Tips(译)]() 视图控制器设计技巧
+* [Design Tips(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Design_Tips.md) 视图控制器使用设计技巧
 
 --- 
 
