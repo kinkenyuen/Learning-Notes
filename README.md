@@ -75,7 +75,7 @@
 
 * [Defining Your Subclass(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Defining_Your_Subclass.md)
 
-* [Implementing a Container View Controller(译)]()
+* [Implementing a Container View Controller(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Implementing_a_Container_View_Controller.md#designing-a-custom-container-view-controller-设计自定义容器视图控制器)
 
 * [Supporting Accessibility(译)]()
 
