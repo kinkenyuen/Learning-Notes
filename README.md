@@ -73,6 +73,15 @@
 
 --- 
 
+* [Defining Your Subclass(译)]()
+
+* [Implementing a Container View Controller(译)]()
+
+* [Supporting Accessibility(译)]()
+
+* [Preserving and Restoring State(译)]()
+
+---
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
