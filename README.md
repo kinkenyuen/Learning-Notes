@@ -67,7 +67,7 @@
 
 * [The Role of View Controllers(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/the_role_of_View_Controllers.md) 视图控制器扮演的角色(职能)
 
-* [The View Controller Hierarchy(译)]() 视图控制器层次结构
+* [The View Controller Hierarchy(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/The_View_Controller_Hierarchy.md#presented-view-controllers-呈现视图控制器) 视图控制器层次结构
 
 * [Design Tips(译)]() 视图控制器设计技巧
 
