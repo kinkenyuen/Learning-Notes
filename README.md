@@ -79,7 +79,7 @@
 
 * [Supporting Accessibility](https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/SupportingAccessibility.html#//apple_ref/doc/uid/TP40007457-CH12-SW1) (让应用程序支持辅助功能，用得比较少就不译了，直接看原文)
 
-* [Preserving and Restoring State(译)]()
+* [Preserving and Restoring State(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Preserving_and%20_Restoring_State.md) 视图控制器状态保存与恢复
 
 ---
 
