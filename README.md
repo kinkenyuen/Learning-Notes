@@ -63,7 +63,7 @@
 
 * [视图层次布局相关的属性介绍与总结](https://stackoverflow.com/questions/37796884/on-ios-what-are-the-differences-between-margins-edge-insets-content-insets-a)
 
-## View Controller编程指南
+## View Controller 编程指南
 
 * [The Role of View Controllers(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/the_role_of_View_Controllers.md) 视图控制器扮演的角色(职能)
 
@@ -71,17 +71,25 @@
 
 * [Design Tips(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Design_Tips.md) 视图控制器使用设计技巧
 
---- 
+---
 
 * [Defining Your Subclass(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Defining_Your_Subclass.md)
 
 * [Implementing a Container View Controller(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Implementing_a_Container_View_Controller.md#designing-a-custom-container-view-controller-设计自定义容器视图控制器)
 
-* [Supporting Accessibility(译)]()
+* [Supporting Accessibility](https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/SupportingAccessibility.html#//apple_ref/doc/uid/TP40007457-CH12-SW1) (让应用程序支持辅助功能，用得比较少就不译了，直接看原文)
 
 * [Preserving and Restoring State(译)]()
 
 ---
+
+## View 编程指南
+
+## Scrollview 编程指南
+
+## Table View 编程指南
+
+## Collection View编程指南
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
