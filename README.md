@@ -83,6 +83,16 @@
 
 ---
 
+* [Presenting a View Controller(译)]() 
+
+* [Using Segues(译)]() 
+
+* [Customizing the Transition Animations(译)]() 
+
+* [Creating Custom Presentations(译)]() 
+
+---
+
 ## View 编程指南
 
 ## Scrollview 编程指南
