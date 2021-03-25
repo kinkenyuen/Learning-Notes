@@ -85,7 +85,7 @@
 
 * [Presenting a View Controller(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Presenting_a_View_Controller.md#presenting-a-view-controller) 通过`present`方法展示视图控制器
 
-* [Using Segues(译)]() 
+* [Using Segues(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Using_Segues.md)  使用`segue`做视图控制器转换
 
 * [Customizing the Transition Animations(译)]() 
 
