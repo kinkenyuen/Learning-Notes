@@ -73,7 +73,7 @@
 
 ---
 
-* [Defining Your Subclass(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Defining_Your_Subclass.md)
+* [Defining Your Subclass(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Defining_Your_Subclass.md) 编写自己的视图控制器子类
 
 * [Implementing a Container View Controller(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Implementing_a_Container_View_Controller.md#designing-a-custom-container-view-controller-设计自定义容器视图控制器) 实现自己的容器视图控制器
 
