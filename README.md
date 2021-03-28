@@ -89,7 +89,13 @@
 
 * [Customizing the Transition Animations(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Customizing_the_Transition_Animations.md)  自定义视图控制器转换动画
 
-* [Creating Custom Presentations(译)]() 
+* [Creating Custom Presentations(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Creating_Custom_Presentations.md#creating-a-custom-presentation-controller)  自定义`presentation`控制器
+
+---
+
+* [The Adaptive Model](https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/TheAdaptiveModel.html#//apple_ref/doc/uid/TP40007457-CH19-SW1) 自适应模型
+
+* [Building an Adaptive Interface(译)](https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/BuildinganAdaptiveInterface.html#//apple_ref/doc/uid/TP40007457-CH32-SW1) 构建自适应的界面
 
 ---
 
@@ -145,7 +151,4 @@
 * [Objective-C 消息发送与转发机制原理](http://yulingtianxia.com/blog/2016/06/15/Objective-C-Message-Sending-and-Forwarding/)
 
 * [MethodSwizzling的两个方案对比](https://github.com/kinkenyuen/Learning-Notes/blob/main/runtime/MethodSwizzling%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94.md)
-
-
-
 
