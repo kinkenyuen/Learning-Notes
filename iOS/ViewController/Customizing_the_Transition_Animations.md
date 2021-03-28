@@ -60,7 +60,7 @@
 
 ### The Custom Animation Sequence
 
-当`presented`视图控制器的`transitioningDelegate`属性包含一个有效的对象时，`UIKit`使用你提供的自定义动画器对象`present`那个视图控制器。当准备触发一个`presentation`时，`UIKit`调用`animationControllerForPresentedController:presentingController:sourceController:` `delegate`方法来取得你自定义的`animator`对象，如果对象有效，`UIKit`执行以下步骤：
+当`presented`视图控制器的`transitioningDelegate`属性包含一个有效的对象时，`UIKit`使用你提供的自定义`animator`对象`present`那个视图控制器。当准备触发一个`presentation`时，`UIKit`调用`animationControllerForPresentedController:presentingController:sourceController:` `delegate`方法来取得你自定义的`animator`对象，如果对象有效，`UIKit`执行以下步骤：
 
 1. `UIKit`调用`transitioning delegate`的 `interactionControllerForPresentation:`方法查看是否有一个可用的`interactive animator`对象，如果该方法返回`nil`，`UIKit`在没有用户交互的情况下执行动画
 
@@ -75,7 +75,7 @@
 
    你的自定义``animator``在动画完成后调用这个方法，通常是在动画的`completion block`中，调用这个方法结束转换，让`UIKit`知道它可以调用`presentViewController:animated:completion:`方法的`completion handler`，并调用`animator`对象自己的`animationEnded:`方法
 
-当需要出一个视图控制器，`UIKit`调用`animationControllerForDismissedController:` `delegate`方法，并执行以下步骤：
+当需要移除一个视图控制器，`UIKit`调用`animationControllerForDismissedController:` `delegate`方法，并执行以下步骤：
 
 1. `UIKit`调用` transitioning delegate`的`interactionControllerForDismissal: `方法来查看是否有一个`interactive animator`对象可用，如果该方法返回`nil`, `UIKit`在没有用户交互的情况下执行动画
 
@@ -88,7 +88,7 @@
 
 4. `UIKit`等待一个`animator`对象调用`context transition` 对象的`completeTransition:`方法
 
-   你的自定义``animator``在动画完成后调用这个方法，通常是在动画的`completion block`中，调用这个方法结束转换，让`UIKit`知道它可以调用`presentViewController:animated:completion:`方法的`completion handler`，并调用`animator`对象自己的`animationEnded:`方法
+   你的自定义``animator``在动画完成后调用这个方法，通常是在动画的`completion block`中，调用这个方法结束转换，让`UIKit`知道它可以调用`presentViewController:animated:completion:`方法(有待验证，理论上应该是调用`dismissViewControllerAnimated:completion:`)的`completion handler`，并调用`animator`对象自己的`animationEnded:`方法
 
    >在动画结束时调用completeTransition:方法是必需的，在调用该方法之前，UIKit不会结束过渡过程，因此不会将控制权返回给你的应用程序。
 
@@ -180,7 +180,7 @@
 通过交换这些值，可以更容易地编写一个`animator`来同时处理`presentation`和`dismissal`，当你设计你的`animator`时，你所要做的就是包含一个属性来表示它是`presentation`动画还是`dismissal`动画，两者之间唯一需要的区别如下:
 
 * `presentation`，将"`to`"`view`添加到容器视图层次结构中
-* `dismissal`，将"`from"`view`从容器视图中移除
+* `dismissal`，将"`from"` `view`从容器视图中移除
 
 ### Creating the Transition Animations
 
