@@ -88,7 +88,7 @@
 
 4. `UIKit`等待一个`animator`对象调用`context transition` 对象的`completeTransition:`方法
 
-   你的自定义``animator``在动画完成后调用这个方法，通常是在动画的`completion block`中，调用这个方法结束转换，让`UIKit`知道它可以调用`presentViewController:animated:completion:`方法(有待验证，理论上应该是调用`dismissViewControllerAnimated:completion:`)的`completion handler`，并调用`animator`对象自己的`animationEnded:`方法
+   你的自定义``animator``在动画完成后调用这个方法，通常是在动画的`completion block`中，调用这个方法结束转换，让`UIKit`知道它可以调用`dismissViewControllerAnimated:completion:`方法的`completion handler`(这一句官方文档写反了)，并调用`animator`对象自己的`animationEnded:`方法
 
    >在动画结束时调用completeTransition:方法是必需的，在调用该方法之前，UIKit不会结束过渡过程，因此不会将控制权返回给你的应用程序。
 
