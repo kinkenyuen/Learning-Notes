@@ -101,6 +101,8 @@
 
 ## View 编程指南
 
+* [About Windows and Views](https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009503-CH1-SW2)
+
 ## Scrollview 编程指南
 
 ## Table View 编程指南
