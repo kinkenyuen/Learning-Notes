@@ -3,7 +3,9 @@
 
 # iOS
 
-[Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
+* [App Programming Guide for iOS](https://developer.apple.com/documentation/uikit/views_and_controls/table_views/configuring_the_cells_for_your_table?language=objc)
+
+* [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
 
 ## 内存管理
 
