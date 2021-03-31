@@ -113,7 +113,13 @@
 
 ## Table View 编程指南
 
+* [Table Views](https://developer.apple.com/documentation/uikit/views_and_controls/table_views?language=objc#see-also)
+
 ## Collection View编程指南
+
+* [Collection Views(new)](https://developer.apple.com/documentation/uikit/views_and_controls/collection_views?language=objc)
+
+* [About iOS Collection Views(old)](https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012334)
 
 ## 线程编程指南(理论)
 * [About Threaded Programming (译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md) 介绍线程的概念及其在应用程序设计中的作用
