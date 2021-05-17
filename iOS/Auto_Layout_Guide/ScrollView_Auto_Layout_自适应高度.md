@@ -76,8 +76,8 @@ imageView.backgroundColor = [UIColor greenColor];
 
 * 创建`scrollview`，给它添加约束确定位置和大小
 * 添加一个`view`，定义它为`Content View`，然后添加约束紧贴`scrollview`的四边，再按实际需求添加以下任一约束来确定`scrollview`滚动方向
-  * 如何设置`Content View`与`scrollview`等宽，则禁止水平滚动
-  * 如何设置`Content View`与`scrollview`等高，则禁止垂直滚动
+  * 如果设置`Content View`与`scrollview`等宽，则禁止水平滚动
+  * 如果设置`Content View`与`scrollview`等高，则禁止垂直滚动
 * 接下来需要向`Content View`添加子视图，并添加**环环相扣**的约束，让子视图确定`scrollview`的内容区域(`contentSize`)
 
 > 环环相扣的意思是，假如当前滚动方向为垂直，则所有子视图的上边缘、下边缘分别与相邻的兄弟视图有明确的约束，对于头尾的子视图，那么它们就是与`Content View`有约束关系
