@@ -17,6 +17,7 @@ HTTP报文分为**报文首部**(header)和**报文主体**(body)，由空行(CR
 <div align="center">    
 <img src="./imgs/HTTP响应报文首部.jpg" width="50%" height="50%">
 </div>
+
 * 请求行：包含请求方法，请求URI和HTTP版本
 * 状态行：包含表明响应结果的状态码，原因短语和HTTP版本
 * 首部字段：包含表示请求和响应的各种条件和属性的各类首部
