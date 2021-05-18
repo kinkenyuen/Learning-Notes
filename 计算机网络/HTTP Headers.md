@@ -1,3 +1,42 @@
+# 目录
+
+   * [HTTP首部](#http首部)
+      * [首部概览](#首部概览)
+      * [End-to-end首部和Hop-by-hop首部](#end-to-end首部和hop-by-hop首部)
+      * [通用首部字段](#通用首部字段)
+         * [Cached-Control](#cached-control)
+            * [表示是否能缓存的指令](#表示是否能缓存的指令)
+            * [控制可执行缓存的对象的指令](#控制可执行缓存的对象的指令)
+            * [指定缓存期限和认证的指令](#指定缓存期限和认证的指令)
+         * [Connection](#connection)
+         * [Trailer](#trailer)
+         * [Transfer-Encoding](#transfer-encoding)
+         * [Upgrade](#upgrade)
+         * [Via](#via)
+      * [请求首部字段](#请求首部字段)
+         * [Accept](#accept)
+         * [Accept-Charset](#accept-charset)
+         * [Accept-Encoding](#accept-encoding)
+         * [Authorization](#authorization)
+         * [Host](#host)
+         * [If-Match](#if-match)
+      * [响应首部字段](#响应首部字段)
+         * [Accept-Ranges](#accept-ranges)
+         * [Age](#age)
+         * [ETag](#etag)
+         * [Location](#location)
+         * [Vary](#vary)
+         * [WWW-Authenticate](#www-authenticate)
+      * [实体首部字段](#实体首部字段)
+         * [Allow](#allow)
+         * [Content-Encoding](#content-encoding)
+         * [Content-Length](#content-length)
+         * [Content-MD5](#content-md5)
+         * [Content-Range](#content-range)
+      * [Cookie使用的首部字段](#cookie使用的首部字段)
+         * [Set-Cookie](#set-cookie)
+         * [Cookie](#cookie)
+
 # HTTP首部
 
 HTTP Headers 译为 HTTP 首部，在HTTP协议中的请求和响应中必定包含HTTP首部
@@ -220,4 +259,202 @@ HTTP首部字段根据缓存代理和非缓存代理的行为，分为2种类型
 * no-transform
 
   请求还是响应中，缓存都不能改变实体主体的媒体类型，防止缓存或代理压缩图片等类似操作
+
+### Connection
+
+该字段有以下两个作用：
+
+* 控制不再转发给代理的首部字段
+
+  `Connection:不再转发的首部字段名`
+
+  在客户端发送请求和服务器返回的响应内，使用Connection首部字段，可控制不再转发给代理的首部字段(即Hop-by-hop首部)
+
+* 管理持久连接
+
+  HTTP/1.1版本的默认连接均为持久连接，客户端在持久连接上连续发送请求，当服务器想明确断开连接时，则指定Connection首部字段值为Close
+
+### Trailer
+
+事先说明在报文主体后记录了哪些首部字段，该首部字段可应用在HTTP/1.1版本分块传输编码时
+
+### Transfer-Encoding
+
+规定了传输报文主体时使用的编码方式
+
+HTTP/1.1的传输编码方式仅对分块传输编码有效
+
+### Upgrade
+
+首部字段Upgrade用于检测HTTP协议及其他协议是否可使用更高的版本进行通信
+
+### Via
+
+使用Via是为了追踪客户端与服务器之间的请求和响应报文的传输路径
+
+报文经过代理或网关时，会先在首部字段Via中附加该服务器的信息，然后再进行转发
+
+它不仅用于追踪报文的转发，还可避免请求回环发生
+
+## 请求首部字段
+
+### Accept
+
+通知服务器，用户代理能够处理得媒体类型以及媒体类型的相对优先级
+
+用type/subtype这种形式来表示，一次指定多种媒体类型
+
+* 文本文件
+
+  text/html，text/plain，text/css ...
+
+  application/xhtml+xml，application/xml ...
+
+* 图片文件
+
+  image/jpeg，image/gif，image/png ...
+
+* 视频文件
+
+  video/mpeg，video/quicktime ...
+
+* 应用程序二进制文件
+
+  application/octet-stream，application/zip ...
+
+要给显示的媒体类型增加优先级，则使用q=来额外表示权重，用分号(;)分隔，权重值范围是0~1，默认值为1，当服务器提供多种内容时，将首先返回权重值最高的媒体类型
+
+### Accept-Charset
+
+通知服务器，用户代理支持的字符集以及字符集的相对顺序
+
+可以一次性指定多种字符集
+
+与Accept一样，可以使用权重值来表示优先级
+
+### Accept-Encoding
+
+通知服务器，用户代理支持的内容编码以及内容编码的优先级顺序，可一次性指定多种内容编码
+
+同样也可以使用权重值来表示相对优先级，也可以使用星号(*)作为通配符，指定任意的编码格式
+
+### Authorization
+
+通知服务器，用户代理的认证信息(证书值)，通常，想要通过服务器认证的用户代理会在接收到返回的401状态码响应后，把首部字段Authorization加入请求中
+
+### Host
+
+虚拟主机运行在同一个IP上，因此使用首部字段Host加以区分
+
+Host告知服务器，请求的资源所处的互联网主机名和端口号
+
+Host字段是HTTP/1.1规范内是唯一一个必须被包含在请求内的首部字段
+
+### If-Match
+
+形如If-xxx这种形式的请求首部字段，都可称为条件请求
+
+服务器接收到附带条件的请求后，只有判断指定条件为真时，才会执行处理请求
+
+If-Match通知服务器匹配资源所用的实体标记(ETag)值，这时的服务器无法使用弱ETag值
+
+服务器会比对If-Match的字段值和资源的ETag值，仅当两者一致时，才会执行请求，反之则返回状态码412 Precondition Failed的响应
+
+还可以使用星号(*)指定If-Match的字段值，表示如果服务器资源存在就处理请求
+
+## 响应首部字段
+
+### Accept-Ranges
+
+首部字段Accept-Ranges是用来告知客户端服务器是否能处理范围请求
+
+当字段值为bytes表示可以处理范围请求，当为none则不能处理范围请求
+
+### Age
+
+通知客户端，源服务器在多久前创建了响应
+
+### ETag
+
+实体标识，一种将资源以字符串形式做唯一性标识的方式
+
+### Location
+
+将响应接收方引导至某个与请求URI位置不同的资源
+
+基本上，该字段会配合3xx: Redirection的响应，提供重定向的URI
+
+几乎所有的浏览器在接收到包含该字段的响应后，都会强制性地尝试地对已提示的重定向资源的访问
+
+### Vary
+
+当代理服务器接收到带有Vary首部字段指定获取资源的请求时，如果使用的Accept-Language字段的值相同，那么就直接从缓存返回响应。反之则需要先从源服务器端获取资源后才能作为响应返回
+
+首部字段Vary可对缓存进行控制，源服务器会向代理服务器传达关于本地缓存使用方法的命令
+
+从代理服务器接收到源服务器返回包含Vary指定项的响应之后，若再要进行缓存，仅对请求中含有相同Vary指定首部字段的请求返回缓存。即使对相同资源发起请求，但由于Vary指定的首部字段不相同，因此必须要从源服务器重新获取资源
+
+### WWW-Authenticate
+
+告知客户端适用于访问请求URI所指定资源的认证方案和带参数提示的质询(challenge)
+
+## 实体首部字段
+
+包含在请求报文和响应报文中的实体部分所使用的首部，用于补充内容的更新时间等与实体相关的信息
+
+### Allow
+
+通知客户端能够支持Request-URI指定资源的所有HTTP方法
+
+### Content-Encoding
+
+通知客户端，服务器对实体的主体部分选用的内容编码方式，内容编码是指在不丢失实体信息的前提下所进行的压缩
+
+### Content-Length
+
+表明实体主体部分的大小（单位：字节）
+
+对实体主体进行内容编码传输时，不能再使用Content-Length首部字段
+
+### Content-MD5
+
+目的在于检查报文主体在传输过程中是否保持完整，以及确认传输到达
+
+对报文主体执行MD5算法获得128位二进制数，再通过Base64编码后将结果写入Content-MD5字段值，由于HTTP首部无法记录二进制值，所以要经过Base64编码处理
+
+为确保报文的有效性，作为接收方的客户端会对报文主体再执行一次相同的MD5算法，计算出的值与字段值作比较后，即可判断出报文主体的准确性
+
+采用这种方法，对内容上的偶发性改变是无从查证的，也无法检测出恶意篡改。原因在于，内容如果被篡改，那么同时意味着Content-MD5也可重新计算然后被篡改。所以处在接收阶段的客户端是无法意识到报文主体以及首部字段Content-MD5是已经被篡改过的
+
+### Content-Range
+
+用于范围请求，字段值以字节为单位，表示当前发送部分以及整个实体的大小
+
+## Cookie使用的首部字段
+
+这部分首部没有编入标准化文档，但是在Web网站中广泛使用
+
+Cookie的工作机制是用户识别及状态管理，Web网站为了管理用户的状态会通过Web浏览器，把一些数据临时写入用户的计算机内，接着当用户访问该Web网站时，可通过通信方式取回之前发放的Cookie
+
+调用Cookie时，由于可校验Cookie的有效期，以及发送方的域、路径、协议等信息，所以正规发布的Cookie内的数据不会因来自其他Web站点和攻击者的攻击而泄漏
+
+| 首部字段名 | 说明                           | 首部类型     |
+| ---------- | ------------------------------ | ------------ |
+| Set-Cookie | 开始状态管理所使用的Cookie信息 | 响应首部字段 |
+| Cookie     | 服务器接收到的Cookie信息       | 请求首部字段 |
+
+### Set-Cookie
+
+| 属性         | 说明                                                         |
+| ------------ | ------------------------------------------------------------ |
+| NAME=VALUE   | 赋予Cookie的名称和其值（必需项）                             |
+| expires=DATE | Cookie的有效期（若不明确指定则默认为浏览器关闭前为止）       |
+| path=PATH    | 将服务器上的文件目录作为Cookie的适用对象(若不指定则默认为文档所在的文件目录) |
+| domain=域名  | 作为Cookie适用对象的域名（若不指定则默认为创建Cookie的服务器的域名） |
+| Secure       | 仅在HTTPS安全通信时才会发送Cookie                            |
+| HttpOnly     | 加以限制，使Cookie不能被JavaScript脚本访问                   |
+
+### Cookie
+
+首部字段Cookie通知服务器，当客户端想获得HTTP状态管理支持时，就会在请求中包含从服务器接收到的Cookie。接收到多个Cookie时，同样可以以多个Cookie形式发送
 
