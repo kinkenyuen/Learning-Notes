@@ -16,6 +16,8 @@
 
 * [HTTPS](https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/HTTPS.md)
 
+* [HTTP客户端认证](https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/HTTP客户端认证.md)
+
 # C/C++
 * [位域](https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md)
 
