@@ -39,6 +39,8 @@
 
 * [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
 
+* [屏幕尺寸信息](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/屏幕尺寸信息.md)
+
 ## 内存管理
 
 * [Advanced Memory Management Programming Guide(译)](https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md)
