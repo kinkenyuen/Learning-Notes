@@ -1,10 +1,8 @@
 <table>
-
     <tr>
         <td>分类</td>
         <td>目录</td>
     </tr>
-
     <tr>
         <td><b>计算机网络</b></td>
         <td>
@@ -82,7 +80,6 @@
                             <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Introduction_to_Core_Foundation_Design_Concepts(译).md">Introduction to Core Foundation Design Concepts(译)</a>
                         </li>
                     </ul>
-
                 <!-- <li>Auto Layout Guide</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Understanding_Auto_Layout(译).md">Understanding Auto Layout(译)</a> 理解自动布局
@@ -206,8 +203,7 @@
             </ul>
         </td>
     </tr>
-    
-    <tr>
+    <!-- <tr>
         <td><b>C</b></td>
         <td>
             <ul>
@@ -215,5 +211,5 @@
                 </li>
             </ul>
         </td>
-    </tr>
+    </tr> -->
 </table>
