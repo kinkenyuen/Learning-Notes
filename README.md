@@ -1,8 +1,10 @@
 <table>
+
     <tr>
         <td>分类</td>
         <td>目录</td>
     </tr>
+
     <tr>
         <td><b>计算机网络</b></td>
         <td>
@@ -39,36 +41,49 @@
             </ul>
         </td>
     </tr>
+
     <tr>
         <td><b>iOS</b></td>
         <td>
             <ul>
-                <li><a href="https://developer.apple.com/documentation/uikit?language=objc">App Programming Guide for iOS</a>
+                <li>
+                    <a href="https://developer.apple.com/documentation/uikit?language=objc">App Programming Guide for iOS</a>
                 </li>
-                <li><a href="https://developer.apple.com/design/human-interface-guidelines/">Human Interface Guidelines</a>
+                <li>
+                    <a href="https://developer.apple.com/design/human-interface-guidelines/">Human Interface Guidelines</a>
                 </li>
-                <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/屏幕尺寸信息.md">屏幕尺寸信息</a>
+                <li>
+                    <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/屏幕尺寸信息.md">屏幕尺寸信息</a>
                 </li>
 
                 <li>内存管理</li>
                     <ul>
-                        <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md">Advanced Memory Management Programming Guide(译)</a>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Advanced_Memory_Management_Programming_Guide(译).md">Advanced Memory Management Programming Guide(译)
+                            </a>
                         </li>
-                        <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Memory_Management_Policy(译).md">Memory Management Policy(译)</a>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Memory_Management_Policy(译).md">Memory Management Policy(译)
+                            </a>
                         </li>
-                        <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Practical_Memory_Management（译）.md">Practical Memory Management(译)</a>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Practical_Memory_Management（译）.md">Practical Memory Management(译)</a>
                         </li>
-                        <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Using_Autorelease_Pool_Blocks(译).md">Using Autorelease Pool Blocks(译)</a>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Cocoa/Using_Autorelease_Pool_Blocks(译).md">Using Autorelease Pool Blocks(译)</a>
                         </li>
-                        <li><a href="http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/">Objective-C 引用计数原理</a>
+                        <li>
+                            <a href="http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/">Objective-C 引用计数原理</a>
                         </li>
-                        <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP">Memory Management Programming Guide For CoreFoundation(译)</a>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Memory_Management_Programming_Guide_For_CoreFoundation(译).md#OP">Memory Management Programming Guide For CoreFoundation(译)</a>
                         </li>
-                        <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Introduction_to_Core_Foundation_Design_Concepts(译).md">Introduction to Core Foundation Design Concepts(译)</a>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Memory_Management/Core_Foundation/Introduction_to_Core_Foundation_Design_Concepts(译).md">Introduction to Core Foundation Design Concepts(译)</a>
                         </li>
                     </ul>
 
-                <li>Auto Layout Guide</li>
+                <!-- <li>Auto Layout Guide</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/Understanding_Auto_Layout(译).md">Understanding Auto Layout(译)</a> 理解自动布局
                         </li>
@@ -99,9 +114,9 @@
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/layout_margins_and_preserves_superview_layout_margins.md">Layout Margins 与 preservesSuperviewLayoutMargins属性</a>
                         </li>
                         <li><a href="https://stackoverflow.com/questions/37796884/on-ios-what-are-the-differences-between-margins-edge-insets-content-insets-a">视图层次布局相关的属性介绍与总结</a>
-                    </ul>
+                    </ul> -->
 
-                    <li>编程指南</li>
+                    <!-- <li>编程指南</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/the_role_of_View_Controllers.md">The Role of View Controllers(译)</a> 视图控制器扮演的角色(职能)
                         </li>
@@ -139,9 +154,9 @@
                         </li>
                         <li><a href="https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012334">About iOS Collection Views(old)</a> 
                         </li>
-                    </ul>
+                    </ul> -->
 
-                    <li>线程</li>
+                    <!-- <li>线程</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/Thread/%E5%85%B3%E4%BA%8E%E7%BA%BF%E7%A8%8B%E7%BC%96%E7%A8%8B.md">About Threaded Programming (译)</a> 介绍线程的概念及其在应用程序设计中的作用
                         </li>
@@ -163,9 +178,9 @@
                         </li>
                         <li><a href="https://github.com/kinkenyuen/MainThreadRunloopMonitor">使用runloop observer监控主线程runloop状态(卡顿)</a> 
                         </li>
-                    </ul>
+                    </ul> -->
 
-                    <li>runtime</li>
+                    <!-- <li>runtime</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/iOS-Notes/blob/main/runtime/%2Balloc%E5%88%86%E6%9E%90.md">+alloc分析</a> 
                         </li>
@@ -187,10 +202,11 @@
                         </li>
                         <li><a href="https://nshipster.cn/nil/">关于nil / Nil / NULL / NSNull</a> 
                         </li>
-                    </ul>
+                    </ul> -->
             </ul>
         </td>
     </tr>
+    
     <tr>
         <td><b>C</b></td>
         <td>
