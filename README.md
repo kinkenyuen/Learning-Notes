@@ -125,6 +125,63 @@
                         <li>
                             <a href="https://stackoverflow.com/questions/37796884/on-ios-what-are-the-differences-between-margins-edge-insets-content-insets-a">视图层次布局相关的属性介绍与总结</a>
                     </ul>
+                    <li>编程指南</li>
+                    <ul>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/the_role_of_View_Controllers.md">The Role of View Controllers(译)</a> 视图控制器扮演的角色(职能)
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/The_View_Controller_Hierarchy.md#presented-view-controllers-呈现视图控制器">The View Controller Hierarchy(译)</a> 视图控制器层次结构
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Design_Tips.md">Design Tips(译)</a> 视图控制器使用设计技巧
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Defining_Your_Subclass.md">Defining Your Subclass(译)</a> 编写自己的视图控制器子类
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Implementing_a_Container_View_Controller.md#designing-a-custom-container-view-controller-设计自定义容器视图控制器">Implementing a Container View Controller(译)</a> 实现自己的容器视图控制器
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/SupportingAccessibility.html#//apple_ref/doc/uid/TP40007457-CH12-SW1">Supporting Accessibility</a> 让应用程序支持辅助功能，用得比较少就不译了，直接看原文
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Preserving_and%20_Restoring_State.md">Preserving and Restoring State(译)</a> 视图控制器状态保存与恢复
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Presenting_a_View_Controller.md#presenting-a-view-controller">Presenting a View Controller(译)</a> 通过Present方法展示视图控制器
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Using_Segues.md">Using Segues(译)</a> 使用segue做视图控制器转换
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Customizing_the_Transition_Animations.md">Customizing the Transition Animations(译)</a> 自定义视图控制器转换动画
+                        </li>
+                        <li>
+                            <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/ViewController/Creating_Custom_Presentations.md#creating-a-custom-presentation-controller">Creating Custom Presentations(译)</a> 自定义presentation控制器
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/TheAdaptiveModel.html#//apple_ref/doc/uid/TP40007457-CH19-SW1">The Adaptive Model</a> 自适应模型
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/BuildinganAdaptiveInterface.html#//apple_ref/doc/uid/TP40007457-CH32-SW1">Building an Adaptive Interface</a> 构建自适应的界面
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/ViewPG_iPhoneOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40009503-CH1-SW2">About Windows and Views</a> 
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/UIScrollView_pg/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008179-CH1-SW1">About Scroll View Programming</a> 
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/documentation/uikit/views_and_controls/table_views?language=objc#see-also">Table Views</a> 
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/documentation/uikit/views_and_controls/collection_views?language=objc">Collection Views(new)</a> 
+                        </li>
+                        <li>
+                            <a href="https://developer.apple.com/library/archive/documentation/WindowsViews/Conceptual/CollectionViewPGforIOS/Introduction/Introduction.html#//apple_ref/doc/uid/TP40012334">About iOS Collection Views(old)</a> 
+                        </li>
+                    </ul>
             </ul>
         </td>
     </tr>
