@@ -19,7 +19,7 @@
                 </li>
                 <li><a href="">链路层和局域网</a>
                 </li>
-                <li>HTTP</li>
+                <li><a href="#http">HTTP</a></li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/HTTP简要.md">HTTP简要</a>
                         </li>
