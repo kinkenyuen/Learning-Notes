@@ -52,7 +52,9 @@
                         <li>
                           <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/TCP的拥塞控制.md">TCP的拥塞控制</a>
                       	</li>
-                        <li>TCP的连接管理</li>
+                        <li>
+                          <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/TCP的拥塞控制.md">TCP的运输连接管理</a>
+                      	</li>
                     </ul>
             </ul>
         </td>
