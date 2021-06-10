@@ -110,4 +110,3 @@ TCP进行拥塞控制的算法有四种，即**慢开始**、**拥塞避免**、
 <div align="center">    
 <img src="./imgs/拥塞控制流程图.jpg" width="100%" height="100%">
 </div>
-
