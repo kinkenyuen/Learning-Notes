@@ -1,3 +1,16 @@
+# 目录
+
+* [报文结构](#报文结构)
+* [编码传输](#编码传输)
+	* [报文主体和实体的差异](#报文主体和实体的差异)
+	* [内容编码](#内容编码)
+	* [分块传输(Chunked Transfer Coding](#分块传输chunked-transfer-coding)
+* [多部分对象集合](#多部分对象集合)
+* [范围请求](#范围请求)
+* [内容协商](#内容协商)
+
+
+
 HTTP协议交互传输的信息称为HTTP报文
 
 HTTP报文本身是由多行(用CR+LF作换行符)数据构成的字符串文本
@@ -8,15 +21,18 @@ HTTP报文分为**报文首部**(header)和**报文主体**(body)，由空行(CR
 <img src="./imgs/HTTP报文.jpg" width="50%" height="50%">
 </div>
 
+
 ## 报文结构
 
 <div align="center">    
 <img src="./imgs/HTTP请求报文首部.jpg" width="50%" height="50%">
 </div>
 
+
 <div align="center">    
 <img src="./imgs/HTTP响应报文首部.jpg" width="50%" height="50%">
 </div>
+
 
 * 请求行：包含请求方法，请求URI和HTTP版本
 * 状态行：包含表明响应结果的状态码，原因短语和HTTP版本
@@ -71,9 +87,9 @@ HTTP协议采用了多部分对象集合，即发送的一份报文主体内可�
 多部分对象集合包含以下：
 
 * multipart/form-data 
-	
+
   在Web表单文件上传时使用
-  
+
 * multipart/byteranges
 
   状态码206(Partial Content，部分内容)响应报文包含了多个范围的内容时使用
