@@ -17,8 +17,6 @@
                 </li>
                 <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/网络层.md">网络层</a>
                 </li>
-                <li><a href="">链路层和局域网</a>
-                </li>
                 <li>HTTP</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/HTTP简要.md">HTTP简要</a>
