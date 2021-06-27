@@ -9,6 +9,8 @@
         <ul>
             <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/操作系统/操作系统概念.md">操作系统概念</a> 
             </li>
+            <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/操作系统/系统调用.md">系统调用</a> 
+            </li>
         </ul>
     </td>
     </tr>
