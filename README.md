@@ -281,8 +281,16 @@
         </td>
     </tr>
     <tr>
-    <td><b>C</b></td>
+    <td><b>C/C++</b></td>
     <td>
+        <ul>
+            <li><a href="https://zh.wikipedia.org/zh-cn/ANSI_C">C标准历史</a> 
+            </li>
+        </ul>
+        <ul>
+            <li><a href="https://zh.wikipedia.org/wiki/C%2B%2B">C++标准历史</a> 
+            </li>
+        </ul>
         <ul>
             <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md">位域</a> 
             </li>
