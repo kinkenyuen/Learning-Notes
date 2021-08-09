@@ -68,6 +68,23 @@
             </ul>
         </td>
     </tr>
+  	    <tr>
+    <td><b>C/C++</b></td>
+    <td>
+        <ul>
+            <li><a href="https://zh.wikipedia.org/zh-cn/ANSI_C">C标准历史</a> 
+            </li>
+        </ul>
+        <ul>
+            <li><a href="https://zh.wikipedia.org/wiki/C%2B%2B">C++标准历史</a> 
+            </li>
+        </ul>
+        <ul>
+            <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md">位域</a> 
+            </li>
+        </ul>
+    </td>
+    </tr>
     <tr>
         <td><b>iOS</b></td>
         <td>
@@ -81,6 +98,13 @@
                 <li>
                     <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/屏幕尺寸信息.md">屏幕尺寸信息</a>
                 </li>
+              	<li>App启动</li>
+              	<ul>
+                    <li>
+                      <a href="https://blog.csdn.net/Hello_Hwc/article/details/78317863">深入理解iOS App的启动过程
+                      </a>
+                    </li>
+              	</ul>
                 <li>内存管理</li>
                     <ul>
                         <li>
@@ -280,21 +304,5 @@
             </ul>
         </td>
     </tr>
-    <tr>
-    <td><b>C/C++</b></td>
-    <td>
-        <ul>
-            <li><a href="https://zh.wikipedia.org/zh-cn/ANSI_C">C标准历史</a> 
-            </li>
-        </ul>
-        <ul>
-            <li><a href="https://zh.wikipedia.org/wiki/C%2B%2B">C++标准历史</a> 
-            </li>
-        </ul>
-        <ul>
-            <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/C%26C%2B%2B/%E4%BD%8D%E5%9F%9F.md">位域</a> 
-            </li>
-        </ul>
-    </td>
-    </tr>
 </table>
+
