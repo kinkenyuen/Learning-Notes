@@ -4,7 +4,7 @@
 * [编码传输](#编码传输)
 	* [报文主体和实体的差异](#报文主体和实体的差异)
 	* [内容编码](#内容编码)
-	* [分块传输(Chunked Transfer Coding](#分块传输chunked-transfer-coding)
+	* [分块传输(Chunked Transfer Coding)](#分块传输chunked-transfer-coding)
 * [多部分对象集合](#多部分对象集合)
 * [范围请求](#范围请求)
 * [内容协商](#内容协商)
