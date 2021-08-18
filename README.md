@@ -65,6 +65,9 @@
                           <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/TCP的运输连接管理.md">TCP的运输连接管理</a>
                       	</li>
                     </ul>
+              			<li>
+                      	<a href="https://github.com/kinkenyuen/SSL_Pinning">SSL Pinning</a>
+              			</li>
             </ul>
         </td>
     </tr>
