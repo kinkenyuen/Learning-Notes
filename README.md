@@ -51,7 +51,7 @@
                             <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/TCP概述.md">TCP概述</a>
                         </li>
                         <li>
-                           <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/可靠传输工作原理.md">TCP可靠传输工作原理</a>
+                           <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/可靠传输工作原理.md">TCP可靠传输工作原理(可靠传输协议)</a>
                       	</li>
                         <li>
                           <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/TCP可靠传输的实现.md">TCP可靠传输的实现</a></li>
