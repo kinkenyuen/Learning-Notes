@@ -28,6 +28,8 @@
                 </li>
                 <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/互联网上的音频:视频服务.md">互联网上的音频/视频服务</a>
                 </li>
+                <li><a href="https://juejin.cn/post/6932001161532669960#heading-37">LC 计算机网络</a>
+                </li>
                 <li>HTTP</li>
                     <ul>
                         <li><a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/计算机网络/HTTP简要.md">HTTP简要</a>
@@ -308,4 +310,3 @@
         </td>
     </tr>
 </table>
-
