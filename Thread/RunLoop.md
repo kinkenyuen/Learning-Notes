@@ -485,7 +485,7 @@ void RunLoopSourceCancelRoutine (void *info, CFRunLoopRef rl, CFStringRef mode)
 
 ### 向输入源发送信号
 
-在将数据传递给输入源之后，客户端必须向源发出信号，并唤醒它的runloop。向源发送信号可以让runloop知道源可以被处理。而且，由于信号发生时线程可能处于休眠状态，因此您应该总是显式地唤醒runloop。
+**在将数据传递给输入源之后，客户端必须向源发出信号，并唤醒它的runloop。向源发送信号可以让runloop知道源可以被处理。而且，由于信号发生时线程可能处于休眠状态，因此您应该总是显式地唤醒runloop**。
 
 清单3-9展示了RunLoopSource对象的fireCommandsOnRunLoop方法。当准备为输入源执行添加到buffer中的命令时，客户端会调用该方法。
 
