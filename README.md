@@ -110,6 +110,9 @@
                     <a href="https://github.com/kinkenyuen/Learning-Notes/blob/main/iOS/Auto_Layout_Guide/屏幕尺寸信息.md">屏幕尺寸信息</a>
                 </li>
                 <li>
+                    <a href="https://zsisme.gitbooks.io/ios-/content/index.html">iOS Core Animation高级技巧（译本）</a>
+                </li>
+                <li>
                     <a href="https://juejin.cn/post/6844904162765832206#heading-9">iOS Rendering 渲染全解析（长文干货）</a>
                 </li>
               	<li>App启动</li>
