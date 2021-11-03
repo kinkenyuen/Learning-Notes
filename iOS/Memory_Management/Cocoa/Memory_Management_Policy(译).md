@@ -31,7 +31,7 @@
 
 * **When you no longer need it, you must relinquish ownership of an object you own** （当你不再需要某对象时，你必须放弃你所拥有的对象的所有权）
 
-  你可以调用`release`方法或`autorelease`方法来放弃对象的所有权。因此，在Cocoa术语中，放弃对象的所有权通常被称为“`releasing`”一个对象
+  你可以调用`release`方法或`autorelease`方法来放弃对象的所有权。因此，在Cocoa术语中，放弃对象的所有权通常被称为`releasing`一个对象
 
 * **You must not relinquish ownership of an object you do not own** （你不能放弃你不拥有的对象的所有权）
 
