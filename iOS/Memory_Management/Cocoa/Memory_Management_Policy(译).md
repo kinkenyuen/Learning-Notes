@@ -113,7 +113,7 @@ if (string == nil) {
 
 # 实现dealloc以放弃对象的所有权
 
-`NSObject`类定义了一个方法`dealloc`，当一个对象没有所有者并且它的内存被回收时，这个方法会被自动调用——在Cocoa术语中，它是“freed”或“deallocated”。`dealloc`方法的作用是释放对象自己的内存，并释放它持有的任何资源，包括自身对其他任何对象实例的所有权。
+`NSObject`类定义了一个方法`dealloc`，当一个对象没有所有者并且它的内存被回收时，这个方法会被自动调用——在Cocoa术语中，它是"freed"或"deallocated"。`dealloc`方法的作用是释放对象自己的内存，并释放它持有的任何资源，包括自身对其他任何对象实例的所有权。
 
 下面的例子说明了如何为`Person`类实现dealloc方法:
 
