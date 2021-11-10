@@ -106,9 +106,10 @@ Cocoa和Core Foundation为使用与端口相关的对象和函数创建基于端
 
 | Methods | Description |
 |---|---|
-| performSelectorOnMainThread:withObject:waitUntilDone:<br>performSelectorOnMainThread:withObject:waitUntilDone:modes: | 在应用程序主线程的下一个runloop中执行指定的选择器。这些方法提供了阻塞当前线程的选项，直到执行选择器。 |
+| performSelectorOnMainThread:withObject:waitUntilDone:<br>performSelectorOnMainThread:withObject:waitUntilDone:modes: | 在应用程序主线程的
+runloop中执行指定的选择器。这些方法提供了阻塞当前线程的选项，直到执行选择器。 |
 | performSelector:onThread:withObject:waitUntilDone:<br>performSelector:onThread:withObject:waitUntilDone:modes:| 对任何有NSThread对象的线程执行指定的选择器。这些方法提供了阻塞当前线程的选项，直到执行选择器。|
-| performSelector:withObject:afterDelay:<br>performSelector:withObject:afterDelay:inModes: | 在下一个运行循环周期和可选的延迟周期之后，对当前线程执行指定的选择器。因为它会等待下一个runloop来执行选择器，所以这些方法会默认提供一个最小延迟，从当前的执行的代码开始计起。如果队列中有多个Selector，会顺序依次执行|
+| performSelector:withObject:afterDelay:<br>performSelector:withObject:afterDelay:inModes: | **在下一个运行循环周期和可选的延迟周期之后，对当前线程执行指定的选择器**。因为它会等待下一个runloop来执行选择器，所以这些方法会默认提供一个最小延迟，从当前的执行的代码开始计起。如果队列中有多个Selector，会顺序依次执行|
 | cancelPreviousPerformRequestsWithTarget:<br>cancelPreviousPerformRequestsWithTarget:selector:object:| 取消在当前线程执行Selector，这些Selector是通过`performSelector:withObject:afterDelay:` 或 `performSelector:withObject:afterDelay:inModes:`方法添加的|
 
 ## 计时器源
