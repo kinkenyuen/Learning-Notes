@@ -68,9 +68,6 @@
                       	</li>
                     </ul>
                     <li>
-                    <a href="http://c.biancheng.net/cpp/html/3029.html">socket</a>
-                    </li>
-                    <li>
                         <a href="https://blog.csdn.net/hguisu/article/details/7453390">socket阻塞与非阻塞、同步与异步、I/O模型</a>
                     </li>
                     <li>
